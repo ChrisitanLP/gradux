@@ -13,10 +13,10 @@ const Header = () => {
         const estudiantesResponse = await axios.get('http://localhost:5000/api/estudiantes-count');
         setEstudiantesCount(estudiantesResponse.data.count);
 
-        const docentesResponse = await axios.get('http://localhost:5000/api/docentes-count');
+        const docentesResponse = await axios.get('http://localhost:5000/api/docentescount');
         setDocentesCount(docentesResponse.data.count);
 
-        const administradoresResponse = await axios.get('http://localhost:5000/api/administradores-count');
+        const administradoresResponse = await axios.get('http://localhost:5000/api/administradorescount');
         setAdministradoresCount(administradoresResponse.data.count);
       } catch (error) {
         console.error('Error al obtener las cantidades:', error);

@@ -18,7 +18,7 @@ const AdminNavbar = (props) => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/user?id=${1}`);
+        const response = await axios.get(`http://localhost:5000/api/user?id=1`);
         if (response.data.success) {
           setUser({ firstName: response.data.firstName, lastName: response.data.lastName });
         } else {

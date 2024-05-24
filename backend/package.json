@@ -4,7 +4,7 @@
   "description": "Backend para la aplicación Gradux",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js --port 5000"
+    "start": "nodemon server.js --port 5000"
   },
   "keywords": [],
   "author": "",
@@ -16,9 +16,13 @@
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "json-server": "^1.0.0-beta.0",
-    "mysql2": "^3.9.7"
+    "mysql2": "^3.9.7",
+    "sequelize": "^6.37.3"
   },
   "config": {
     "port": 5000
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }

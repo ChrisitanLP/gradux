@@ -90,12 +90,11 @@ exports.getAdministradoresCount = (req, res) => {
 };
 
 
-// Nueva función para obtener la información del usuario
 exports.getUser = (req, res) => {
   // Suponiendo que `id` del usuario se pasa como un parámetro de consulta en la URL
   const userId = req.query.id;
 
-  db.query('SELECT firstName, lastName FROM usuarios WHERE id = ?', [userId], (err, results) => {
+  db.query('SELECT nombre, apellido FROM usuarios WHERE id = ?', [userId], (err, results) => {
     if (err) {
       console.error('Error al realizar la consulta:', err);
       return res.status(500).json({ success: false, message: 'Error interno del servidor' });
@@ -106,6 +105,104 @@ exports.getUser = (req, res) => {
     }
 
     const user = results[0];
-    res.json({ success: true, firstName: user.firstName, lastName: user.lastName });
+    const nombreCompleto = `${user.nombre} ${user.apellido}`; // Concatenar nombre y apellido
+    res.json({ success: true, nombreCompleto: nombreCompleto });
   });
+};
+
+//CRUD ***************************************************************************************************************************
+// Función para crear un nuevo usuario
+exports.createUser = async (req, res) => {
+  const { email, password, nombre, apellido, rol } = req.body;
+  
+  try {
+    // Generar el hash de la contraseña
+    const hashedPassword = await bcrypt.hash(password, 10);
+  
+    db.query('INSERT INTO usuarios (email, password, nombre, apellido, rol) VALUES (?, ?, ?, ?, ?)', 
+      [email, hashedPassword, nombre, apellido, rol], 
+      (err, results) => {
+        if (err) {
+          console.error('Error al crear el usuario:', err);
+          return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+        }
+        res.status(201).json({ success: true, message: 'Usuario creado exitosamente' });
+      }
+    );
+  } catch (error) {
+    console.error('Error al generar el hash de la contraseña:', error);
+    return res.status(500).json({ success: false, message: 'Error al crear el usuario' });
+  }
+};
+
+// Función para obtener un usuario por su ID
+exports.getUserById = (req, res) => {
+  const userId = req.params.id;
+  db.query('SELECT * FROM usuarios WHERE id = ?', [userId], (err, results) => {
+    if (err) {
+      console.error('Error al obtener el usuario:', err);
+      return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+    }
+    res.json({ success: true, user: results[0] });
+  });
+};
+
+// Función para obtener todos los usuarios
+exports.getAllUsers = (req, res) => {
+  db.query('SELECT * FROM usuarios', (err, results) => {
+    if (err) {
+      console.error('Error al obtener los usuarios:', err);
+      return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+    res.json({ success: true, users: results });
+  });
+};
+
+// Función para eliminar un usuario por su ID
+exports.deleteUserById = (req, res) => {
+  const userId = req.params.id;
+  db.query('DELETE FROM usuarios WHERE id = ?', [userId], (err, results) => {
+    if (err) {
+      console.error('Error al eliminar el usuario:', err);
+      return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+    }
+    res.json({ success: true, message: 'Usuario eliminado exitosamente' });
+  });
+};
+
+// Función para actualizar un usuario por su ID
+exports.updateUserById = async (req, res) => {
+  const userId = req.params.id;
+  const { email, password, nombre, apellido, rol } = req.body;
+  
+  try {
+    // Generar el hash de la nueva contraseña, si se proporciona
+    let hashedPassword = password;
+    if (password) {
+      hashedPassword = await bcrypt.hash(password, 10);
+    }
+  
+    db.query('UPDATE usuarios SET email = ?, password = ?, nombre = ?, apellido = ?, rol = ? WHERE id = ?', 
+      [email, hashedPassword, nombre, apellido, rol, userId], 
+      (err, results) => {
+        if (err) {
+          console.error('Error al actualizar el usuario:', err);
+          return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+        }
+        if (results.affectedRows === 0) {
+          return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+        }
+        res.json({ success: true, message: 'Usuario actualizado exitosamente' });
+      }
+    );
+  } catch (error) {
+    console.error('Error al generar el hash de la contraseña:', error);
+    return res.status(500).json({ success: false, message: 'Error al actualizar el usuario' });
+  }
 };

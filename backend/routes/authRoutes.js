@@ -22,10 +22,17 @@ router.get('/admin/dashboard', authMiddleware.requireAuth, authMiddleware.requir
 
 // Rutas para obtener la cantidad de estudiantes, docentes y administradores
 router.get('/estudiantes-count', authController.getEstudiantesCount);
+
 // Rutas sin autenticación
 router.get('/user', authController.getUser);
-router.get('/docentes/count', authController.getDocentesCount);
-router.get('/administradores/count', authController.getAdministradoresCount);
+router.get('/docentescount', authController.getDocentesCount);
+router.get('/administradorescount', authController.getAdministradoresCount);
 
+// CRUD Usuarios
+router.post('/usuarios', authController.createUser);
+router.get('/usuarios', authController.getAllUsers);
+router.get('/usuarios/:id', authController.getUserById);
+router.put('/usuarios/:id', authController.updateUserById);
+router.delete('/usuarios/:id', authController.deleteUserById);
 
 module.exports = router;

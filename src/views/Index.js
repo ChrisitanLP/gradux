@@ -1,88 +1,90 @@
-/*!
+import React, { useState, useEffect } from 'react';
+import { Button, Card, CardHeader, Table, Container, Row, Col } from 'reactstrap';
+import Header from 'components/Headers/Header';
+import { fetchUsers, deleteUser, createUser, updateUser } from 'api/users'; // Importamos los servicios
 
-=========================================================
-* Argon Dashboard React - v1.2.4
-=========================================================
+import CreateModal from 'components/modals/CreateModal';
+import EditModal from 'components/modals/EditModal';
+import DeleteModal from 'components/modals/DeleteModal';
 
-* Product Page: https://www.creative-tim.com/product/argon-dashboard-react
-* Copyright 2024 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md)
+const Index = () => {
+  const [users, setUsers] = useState([]);
+  const [createModalOpen, setCreateModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
-* Coded by Creative Tim
+  useEffect(() => {
+    fetchAllUsers();
+  }, []);
 
-=========================================================
+  const fetchAllUsers = async () => {
+    try {
+      const usersData = await fetchUsers();
+      setUsers(usersData);
+    } catch (error) {
+      console.error('Error al obtener usuarios:', error);
+    }
+  };
 
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+  const toggleCreateModal = () => {
+    setCreateModalOpen(!createModalOpen);
+  };
 
-*/
-import { useState } from "react";
-// node.js library that concatenates classes (strings)
-import classnames from "classnames";
-// javascipt plugin for creating charts
-import Chart from "chart.js";
-// react plugin used to create charts
-import { Line, Bar } from "react-chartjs-2";
-// reactstrap components
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  NavItem,
-  NavLink,
-  Nav,
-  Progress,
-  Table,
-  Container,
-  Row,
-  Col,
-} from "reactstrap";
+  const toggleEditModal = () => {
+    setEditModalOpen(!editModalOpen);
+  };
 
-// core components
-import {
-  chartOptions,
-  parseOptions,
-  chartExample1,
-  chartExample2,
-} from "variables/charts.js";
+  const toggleDeleteModal = () => {
+    setDeleteModalOpen(!deleteModalOpen);
+  };
 
-import Header from "components/Headers/Header.js";
+  const handleCreateUser = async (userData) => {
+    try {
+      await createUser(userData);
+      fetchAllUsers();
+      toggleCreateModal();
+    } catch (error) {
+      console.error('Error al crear usuario:', error);
+    }
+  };
 
-const Index = (props) => {
-  const [activeNav, setActiveNav] = useState(1);
-  const [chartExample1Data, setChartExample1Data] = useState("data1");
+  const handleEditUser = async (userData) => {
+    try {
+      await updateUser(selectedUser.id, userData);
+      fetchAllUsers();
+      toggleEditModal();
+    } catch (error) {
+      console.error('Error al editar usuario:', error);
+    }
+  };
 
-  if (window.Chart) {
-    parseOptions(Chart, chartOptions());
-  }
-
-  const toggleNavs = (e, index) => {
-    e.preventDefault();
-    setActiveNav(index);
-    setChartExample1Data("data" + index);
+  const handleDeleteUser = async () => {
+    try {
+      await deleteUser(selectedUser.id);
+      // Actualiza la lista de usuarios eliminando el usuario eliminado
+      setUsers(users.filter(user => user.id !== selectedUser.id));
+      toggleDeleteModal();
+    } catch (error) {
+      console.error('Error al eliminar usuario:', error);
+    }
   };
 
   return (
     <>
       <Header />
-      {/* Page content */}
       <Container className="mt--7" fluid>
         <Row className="mt-5">
-          <Col className="mb-5 mb-xl-0" xl="8">
+          <Col className="mb-5 mb-xl-0" xl="12">
             <Card className="shadow">
               <CardHeader className="border-0">
                 <Row className="align-items-center">
                   <div className="col">
-                    <h3 className="mb-0">Listado Tutorados</h3>
+                    <h3 className="mb-0">Listado de Usuarios</h3>
                   </div>
                   <div className="col text-right">
-                    <Button
-                      color="primary"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                      size="sm"
-                    >
-                      Ver Más
+                    <Button color="primary" onClick={toggleCreateModal} size="sm">
+                      Agregar Usuario
                     </Button>
                   </div>
                 </Row>
@@ -90,82 +92,45 @@ const Index = (props) => {
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
+                    <th scope="col">ID</th>
                     <th scope="col">Nombre</th>
                     <th scope="col">Apellido</th>
-                    <th scope="col">Tema</th>
-                    <th scope="col">Carrera</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Contraseña</th>
+                    <th scope="col">Rol</th>
+                    <th scope="col">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">Christian</th>
-                    <td>López</td>
-                    <td>Beneficios del uso de REACT</td>
-                    <td>
-                      Software
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Axel</th>
-                    <td>Vargas</td>
-                    <td>Beneficios del uso de REACT</td>
-                    <td>
-                      Robotica
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Elena</th>
-                    <td>Intriago</td>
-                    <td>Beneficios del uso de REACT</td>
-                    <td>
-                      Software
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Stefania</th>
-                    <td>Mora</td>
-                    <td>Beneficios del uso de REACT</td>
-                    <td>
-                      Tecnologías de la Información
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Ariel</th>
-                    <td>Navas</td>
-                    <td>Beneficios del uso de REACT</td>
-                    <td>
-                      Ingeniería Industrial
-                    </td>
-                  </tr>
+                  {users.map((user) => (
+                    <tr key={user.id}>
+                      <td>{user.id}</td>
+                      <td>{user.nombre}</td>
+                      <td>{user.apellido}</td>
+                      <td>{user.email}</td>
+                      <td>{user.password}</td>
+                      <td>{user.rol}</td>
+                      <td>
+                        <Button color="primary" onClick={() => {setSelectedUser(user); toggleEditModal();}}>
+                          Editar
+                        </Button>{' '}
+                        <Button color="danger" onClick={() => {setSelectedUser(user); toggleDeleteModal();}}>
+                          Eliminar
+                        </Button>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </Table>
             </Card>
           </Col>
-          <Col xl="4">
-          <Card className="shadow">
-              <CardHeader className="bg-transparent">
-                <Row className="align-items-center">
-                  <div className="col">
-                    <h6 className="text-uppercase text-muted ls-1 mb-1">
-                      Estudiantes
-                    </h6>
-                    <h2 className="mb-0">Porcentaje Progreso</h2>
-                  </div>
-                </Row>
-              </CardHeader>
-              <CardBody>
-                {/* Chart */}
-                <div className="chart">
-                  <Bar
-                    data={chartExample2.data}
-                    options={chartExample2.options}
-                  />
-                </div>
-              </CardBody>
-            </Card>
-          </Col>
         </Row>
       </Container>
+
+      {/* Modales */}
+      <CreateModal isOpen={createModalOpen} toggle={toggleCreateModal} onSave={handleCreateUser} />
+      <EditModal isOpen={editModalOpen} toggle={toggleEditModal} user={selectedUser} onSave={handleEditUser} />
+      <DeleteModal isOpen={deleteModalOpen} toggle={toggleDeleteModal} user={selectedUser} onDelete={handleDeleteUser} />
     </>
   );
 };

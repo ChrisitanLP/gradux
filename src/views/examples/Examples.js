@@ -18,8 +18,8 @@ const Tables = () => {
 
     const header = (
         <div className="table-header">
-            <h3 className="mb-0">Card tables</h3>
-            <span className="p-input-icon-left">
+            <h3 className="mb-0">Registro Estudiantes</h3>
+            <span className="p-input-icon">
                 <i className="pi pi-search" />
                 <InputText type="search" onInput={(e) => console.log(e.target.value)} placeholder="Search..." />
             </span>
@@ -33,9 +33,6 @@ const Tables = () => {
                 <Row>
                     <div className="col">
                         <Card className="shadow">
-                            <CardHeader className="border-0">
-                                <h3 className="mb-0">Card tables</h3>
-                            </CardHeader>
                             <DataTable value={cars} header={header} paginator rows={5} rowsPerPageOptions={[5, 10, 20]} className="p-datatable-striped">
                                 <Column field="nombre" header="Nombre" sortable filter filterPlaceholder="Buscar por nombre" />
                                 <Column field="apellido" header="Apellido" sortable filter filterPlaceholder="Buscar por apellido" />
