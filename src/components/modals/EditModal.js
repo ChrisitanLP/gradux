@@ -36,7 +36,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
 
   return (
     <Modal isOpen={isOpen} toggle={toggle}>
-      <ModalHeader toggle={toggle}>Agregar Usuario</ModalHeader>
+      <ModalHeader toggle={toggle}>Editar Usuario</ModalHeader>
       <ModalBody>
         <Form>
           <Row>
@@ -66,7 +66,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
             </Col>
           </Row>
           <Row>
-            <Col md={6}>
+            <Col md={12}>
               <FormGroup>
                 <Label for="email">Email</Label>
                 <Input
@@ -78,18 +78,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
                 />
               </FormGroup>
             </Col>
-            <Col md={6}>
-              <FormGroup>
-                <Label for="password">Contraseña</Label>
-                <Input
-                  type="password"
-                  name="password"
-                  id="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                />
-              </FormGroup>
-            </Col>
+            
           </Row>
           <Row>
             <Col md={12}>

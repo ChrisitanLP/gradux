@@ -56,7 +56,7 @@ exports.logout = (req, res) => {
 
 // Obtener cantidad de estudiantes
 exports.getEstudiantesCount = (req, res) => {
-  db.query('SELECT COUNT(*) AS count FROM usuarios WHERE rol = "estudiante"', (err, results) => {
+  db.query('SELECT COUNT(*) AS count FROM estudiantes', (err, results) => {
     if (err) {
       console.error('Error al realizar la consulta:', err);
       return res.status(500).json({ success: false, message: 'Error interno del servidor' });
@@ -64,7 +64,6 @@ exports.getEstudiantesCount = (req, res) => {
     res.json({ success: true, count: results[0].count });
   });
 };
-
 
 exports.getDocentesCount = (req, res) => {
   db.query('SELECT COUNT(*) AS count FROM usuarios WHERE rol = ?', ['docente'], (err, results) => {
@@ -160,6 +159,38 @@ exports.getAllUsers = (req, res) => {
     res.json({ success: true, users: results });
   });
 };
+// Función para obtener todos los usuarios
+exports.getAllUsuarios = (req, res) => {
+  db.query('SELECT * FROM usuarios', (err, results) => {
+    if (err) {
+      console.error('Error al obtener los usuarios:', err);
+      return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+    res.json({ success: true, usuarios: results }); // Cambiado a 'usuarios'
+  });
+};
+// Función para obtener todos los usuarios que tienen el rol de docente
+exports.getAllDocentes = (req, res) => {
+  const rolDocente = 'docente'; // Define el rol que deseas filtrar
+  db.query('SELECT * FROM usuarios WHERE rol = ?', [rolDocente], (err, results) => {
+    if (err) {
+      console.error('Error al obtener los usuarios:', err);
+      return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+    res.json({ success: true, usuarios: results }); // Cambiado a 'usuarios'
+  });
+};
+// Función para obtener todas las carreras
+exports.getAllCarreras = (req, res) => {
+  db.query('SELECT * FROM Carreras', (err, results) => {
+    if (err) {
+      console.error('Error al obtener las carreras:', err);
+      return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+    res.json({ success: true, carreras: results });
+  });
+};
+
 
 // Función para eliminar un usuario por su ID
 exports.deleteUserById = (req, res) => {
@@ -179,30 +210,106 @@ exports.deleteUserById = (req, res) => {
 // Función para actualizar un usuario por su ID
 exports.updateUserById = async (req, res) => {
   const userId = req.params.id;
-  const { email, password, nombre, apellido, rol } = req.body;
-  
+  const { email, nombre, apellido, rol } = req.body;
+
   try {
-    // Generar el hash de la nueva contraseña, si se proporciona
-    let hashedPassword = password;
-    if (password) {
-      hashedPassword = await bcrypt.hash(password, 10);
-    }
-  
-    db.query('UPDATE usuarios SET email = ?, password = ?, nombre = ?, apellido = ?, rol = ? WHERE id = ?', 
-      [email, hashedPassword, nombre, apellido, rol, userId], 
-      (err, results) => {
-        if (err) {
-          console.error('Error al actualizar el usuario:', err);
-          return res.status(500).json({ success: false, message: 'Error interno del servidor' });
-        }
-        if (results.affectedRows === 0) {
-          return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
-        }
-        res.json({ success: true, message: 'Usuario actualizado exitosamente' });
+    // Construir la consulta de actualización dinámicamente
+    let query = 'UPDATE usuarios SET email = ?, nombre = ?, apellido = ?, rol = ? WHERE id = ?';
+    let values = [email, nombre, apellido, rol, userId];
+
+    db.query(query, values, (err, results) => {
+      if (err) {
+        console.error('Error al actualizar el usuario:', err);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
       }
-    );
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+      }
+      res.json({ success: true, message: 'Usuario actualizado exitosamente' });
+    });
   } catch (error) {
-    console.error('Error al generar el hash de la contraseña:', error);
+    console.error('Error al actualizar el usuario:', error);
     return res.status(500).json({ success: false, message: 'Error al actualizar el usuario' });
   }
+};
+
+
+//CRUD ***************************************************************************************************************************
+// Función para crear un nuevo estudiante
+exports.createStudent = (req, res) => {
+  const { nombre1, nombre2, apellido1, apellido2, id_carrera, fecha_asignacion_tutor, tema_tesis, fecha_aprobacion_tema, estado_estudiante, id_tutor } = req.body;
+
+  db.query(
+    'INSERT INTO Estudiantes (nombre1, nombre2, apellido1, apellido2, id_carrera, fecha_asignacion_tutor, tema_tesis, fecha_aprobacion_tema, estado_estudiante, id_tutor) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    [nombre1, nombre2, apellido1, apellido2, id_carrera, fecha_asignacion_tutor, tema_tesis, fecha_aprobacion_tema, estado_estudiante, id_tutor],
+    (err, results) => {
+      if (err) {
+        console.error('Error al crear el estudiante:', err);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+      }
+      res.status(201).json({ success: true, message: 'Estudiante creado exitosamente' });
+    }
+  );
+};
+
+// Función para obtener un estudiante por su ID
+exports.getStudentById = (req, res) => {
+  const studentId = req.params.id;
+  db.query('SELECT * FROM Estudiantes WHERE id_estudiante = ?', [studentId], (err, results) => {
+    if (err) {
+      console.error('Error al obtener el estudiante:', err);
+      return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+    if (results.length === 0) {
+      return res.status(404).json({ success: false, message: 'Estudiante no encontrado' });
+    }
+    res.json({ success: true, student: results[0] });
+  });
+};
+
+// Función para obtener todos los estudiantes con nombres de carrera y tutor
+exports.getAllStudents = (req, res) => {
+  db.query('SELECT e.id_estudiante, e.nombre1, e.nombre2, e.apellido1, e.apellido2, c.nombre_carrera, CONCAT(u.nombre, " ", u.apellido) AS nombre_tutor, e.fecha_asignacion_tutor, e.tema_tesis, e.fecha_aprobacion_tema, e.estado_estudiante FROM estudiantes e LEFT JOIN carreras c ON e.id_carrera = c.id_carrera LEFT JOIN usuarios u ON e.id_tutor = u.id', (err, results) => {
+    if (err) {
+      console.error('Error al obtener los estudiantes:', err);
+      return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+    res.json({ success: true, students: results });
+  });
+};
+
+// Función para eliminar un estudiante por su ID
+exports.deleteStudentById = (req, res) => {
+  const studentId = req.params.id;
+  db.query('DELETE FROM Estudiantes WHERE id_estudiante = ?', [studentId], (err, results) => {
+    if (err) {
+      console.error('Error al eliminar el estudiante:', err);
+      return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+    if (results.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Estudiante no encontrado' });
+    }
+    res.json({ success: true, message: 'Estudiante eliminado exitosamente' });
+  });
+};
+
+// Función para actualizar un estudiante por su ID
+exports.updateStudentById = (req, res) => {
+  const studentId = req.params.id;
+  const { nombre1, nombre2, apellido1, apellido2, estado_estudiante, id_tutor } = req.body;
+
+  db.query(
+    'UPDATE Estudiantes SET nombre1 = ?, nombre2 = ?, apellido1 = ?, apellido2 = ?, estado_estudiante = ?, id_tutor = ? WHERE id_estudiante = ?',
+    [nombre1, nombre2, apellido1, apellido2, estado_estudiante, id_tutor, studentId],
+    (err, results) => {
+      if (err) {
+        console.error('Error al actualizar el estudiante:', err);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+      }
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ success: false, message: 'Estudiante no encontrado' });
+      }
+      res.json({ success: true, message: 'Estudiante actualizado exitosamente' });
+    }
+  );
 };

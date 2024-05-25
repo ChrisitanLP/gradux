@@ -7,13 +7,13 @@ import Header from 'components/Headers/Header';
 
 const Tables = () => {
     const cars = [
-        { nombre: 'Christian', apellido: 'López', tema: 'Beneficios del uso de REACT', carrera: 'Software' },
-        { nombre: 'Micaela', apellido: 'Ramon', tema: 'Beneficios del uso de REACT', carrera: 'Tecnologías de la Información' },
-        { nombre: 'Mateo', apellido: 'Ortiz', tema: 'Beneficios del uso de REACT', carrera: 'Software' },
-        { nombre: 'Axel', apellido: 'Vargas', tema: 'Beneficios del uso de REACT', carrera: 'Robotica' },
-        { nombre: 'Elena', apellido: 'Intriago', tema: 'Beneficios del uso de REACT', carrera: 'Software' },
-        { nombre: 'Stefania', apellido: 'Mora', tema: 'Beneficios del uso de REACT', carrera: 'Tecnologías de la Información' },
-        { nombre: 'Ariel', apellido: 'Navas', tema: 'Beneficios del uso de REACT', carrera: 'Ingeniería Industrial' }
+        { nombre: 'Christian', apellido: 'López', tema: 'Beneficios del uso de REACT', carrera: 'Software', tutor: 'Christian Lopez' },
+        { nombre: 'Micaela', apellido: 'Ramon', tema: 'Beneficios del uso de REACT', carrera: 'Tecnologías de la Información', tutor: 'Christian Lopez' },
+        { nombre: 'Mateo', apellido: 'Ortiz', tema: 'Beneficios del uso de REACT', carrera: 'Software', tutor: 'Christian Lopez' },
+        { nombre: 'Axel', apellido: 'Vargas', tema: 'Beneficios del uso de REACT', carrera: 'Robotica', tutor: 'Christian Lopez' },
+        { nombre: 'Elena', apellido: 'Intriago', tema: 'Beneficios del uso de REACT', carrera: 'Software', tutor: 'Christian Lopez' },
+        { nombre: 'Stefania', apellido: 'Mora', tema: 'Beneficios del uso de REACT', carrera: 'Tecnologías de la Información', tutor: 'Christian Lopez' },
+        { nombre: 'Ariel', apellido: 'Navas', tema: 'Beneficios del uso de REACT', carrera: 'Ingeniería Industrial', tutor: 'Christian Lopez' }
     ];
 
     const header = (
@@ -38,6 +38,7 @@ const Tables = () => {
                                 <Column field="apellido" header="Apellido" sortable filter filterPlaceholder="Buscar por apellido" />
                                 <Column field="tema" header="Tema" sortable filter filterPlaceholder="Buscar por tema" />
                                 <Column field="carrera" header="Carrera" sortable filter filterPlaceholder="Buscar por carrera" />
+                                <Column field="tutor" header="Tutor" sortable filter filterPlaceholder="Buscar por tutor" />
                             </DataTable>
                         </Card>
                     </div>

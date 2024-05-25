@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Card, CardBody, CardTitle, Container, Row, Col } from "reactstrap";
 
-const Header = () => {
+const TeacherHeader = () => {
   const [estudiantesCount, setEstudiantesCount] = useState(0);
   const [docentesCount, setDocentesCount] = useState(0);
   const [administradoresCount, setAdministradoresCount] = useState(0);
@@ -106,4 +106,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default TeacherHeader;

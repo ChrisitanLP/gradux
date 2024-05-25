@@ -12,8 +12,7 @@ import {
   Media,
 } from "reactstrap";
 
-
-const AdminNavbar = (props) => {
+const TeacherNavbar = (props) => {
   const [user, setUser] = useState({ firstName: '', lastName: '' });
 
   useEffect(() => {
@@ -63,7 +62,7 @@ const AdminNavbar = (props) => {
                 <span className="avatar avatar-sm rounded-circle">
                   <img
                     alt="..."
-                    src={require("../../assets/img/theme/perfil1.png")}
+                    src={require("../../assets/img/brand/teacher-avatar.png")}
                   />
                 </span>
                 <Media className="ml-2 d-none d-lg-block">
@@ -86,4 +85,4 @@ const AdminNavbar = (props) => {
   );
 };
 
-export default AdminNavbar;
+export default TeacherNavbar;
