@@ -6,29 +6,31 @@ import axios from "axios";
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [auth, setAuth] = useState({});
+
+  const checkAuth = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/api/check-auth", { withCredentials: true });
+      setAuth(response.data);
+    } catch (error) {
+      console.error("Error al verificar autenticación:", error);
+    }
+  };
 
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/check-auth", { withCredentials: true });
-        setIsAuthenticated(response.data.isLoggedIn);
-      } catch (error) {
-        console.error("Error al verificar autenticación:", error);
-      }
-    };
-
     checkAuth();
   }, []);
 
-  const login = () => setIsAuthenticated(true);
+  const login = () => {
+    checkAuth();
+  }
   const logout = () => {
-    setIsAuthenticated(false);
+    setAuth(false);
     axios.post("http://localhost:5000/api/logout", {}, { withCredentials: true });
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ auth, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

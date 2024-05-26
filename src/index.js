@@ -12,12 +12,13 @@ import 'primereact/resources/primereact.min.css';          // Estilos de PrimeRe
 import 'primeicons/primeicons.css';                        // Iconos de PrimeReact
 
 import AdminLayout from "layouts/Admin.js";
+import TeacherLayout from "layouts/Teacher.js";
 import AuthLayout from "layouts/Auth.js";
 import { AuthProvider, useAuth } from "context/AuthContext";
 
 const PrivateRoute = ({ element: Element, ...rest }) => {
-  const { isAuthenticated } = useAuth();
-  return isAuthenticated ? <Element {...rest} /> : <Navigate to="/auth/login" replace />;
+  const { auth } = useAuth();
+  return auth.isLoggedIn ? <Element {...rest} /> : <Navigate to="/auth/login" replace />;
 };
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -27,6 +28,7 @@ root.render(
     <AuthProvider>
       <Routes>
         <Route path="/admin/*" element={<PrivateRoute element={AdminLayout} />} />
+        <Route path="/teacher/*" element={<PrivateRoute element={TeacherLayout} />} />
         <Route path="/auth/*" element={<AuthLayout />} />
         <Route path="*" element={<Navigate to="/admin/index" replace />} />
       </Routes>

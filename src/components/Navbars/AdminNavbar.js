@@ -11,17 +11,18 @@ import {
   DropdownItem,
   Media,
 } from "reactstrap";
-
+import { useAuth } from "context/AuthContext";
 
 const AdminNavbar = (props) => {
-  const [user, setUser] = useState({ firstName: '', lastName: '' });
+  const [user, setUser] = useState({ nombreCompleto: '', userId: '', rol: '' });
+  const { auth } = useAuth();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/user?id=1`);
+        const response = await axios.get(`http://localhost:5000/api/user?id=${auth.userId}`);
         if (response.data.success) {
-          setUser({ firstName: response.data.firstName, lastName: response.data.lastName });
+          setUser({ nombreCompleto: response.data.nombreCompleto, userId: response.data.userId, rol: response.data.rol });
         } else {
           console.error("Error al obtener los datos del usuario:", response.data.message);
         }

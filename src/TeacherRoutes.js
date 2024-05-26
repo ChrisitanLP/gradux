@@ -20,7 +20,7 @@ import Profile from "views/examples/Profile.js";
 import Login from "views/examples/Login.js";
 import Users from "views/examples/Users.js";
 import Examples from "views/examples/Examples.js";
-import Teachers from "views/examples/Teachers";
+import Teachers from "views/examples/Examples.js";
 
 var routes = [
   {

@@ -29,7 +29,7 @@ import 'primeicons/primeicons.css';                        // Iconos de PrimeRea
 
 import routes from "TeacherRoutes.js";
 
-const Admin = (props) => {
+const Teacher = (props) => {
   const mainContent = React.useRef(null);
   const location = useLocation();
 
@@ -41,7 +41,7 @@ const Admin = (props) => {
 
   const getRoutes = (routes) => {
     return routes.map((prop, key) => {
-      if (prop.layout === "/admin") {
+      if (prop.layout === "/teacher") {
         return (
           <Route path={prop.path} element={prop.component} key={key} exact />
         );
@@ -91,4 +91,4 @@ const Admin = (props) => {
   );
 };
 
-export default Admin;
+export default Teacher;

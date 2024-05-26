@@ -39,11 +39,12 @@ exports.login = (req, res) => {
 
 exports.checkAuth = (req, res) => {
   if (req.session.user) {
-    res.json({ isLoggedIn: true });
+    res.json({ isLoggedIn: true, userId: req.session.user.id, rol: req.session.user.rol});
   } else {
     res.json({ isLoggedIn: false });
   }
 };
+
 
 exports.logout = (req, res) => {
   req.session.destroy(err => {
@@ -105,8 +106,9 @@ exports.getUser = (req, res) => {
 
     const user = results[0];
     const nombreCompleto = `${user.nombre} ${user.apellido}`; // Concatenar nombre y apellido
-    res.json({ success: true, nombreCompleto: nombreCompleto });
+    res.json({ success: true, nombreCompleto: nombreCompleto, userId: user.id, rol: user.rol });
   });
+
 };
 
 //CRUD ***************************************************************************************************************************

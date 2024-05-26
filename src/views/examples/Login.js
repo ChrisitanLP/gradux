@@ -21,7 +21,7 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
-  const { isAuthenticated, login } = useAuth();
+  const { auth, login } = useAuth();
 
   const handleLogin = async () => {
     setLoginError("");
@@ -49,8 +49,12 @@ const Login = () => {
     }
   };
 
-  if (isAuthenticated) {
-    return <Navigate to="/admin/index" replace />;
+  if (auth.isLoggedIn) {
+    if (auth.rol == 'administrador'){
+      return <Navigate to="/admin/index" replace />;
+    }else if (auth.rol == 'docente'){
+      return <Navigate to="/teacher/index" replace />;
+    }
   }
 
   return (

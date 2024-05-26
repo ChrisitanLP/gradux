@@ -11,16 +11,18 @@ import {
   DropdownItem,
   Media,
 } from "reactstrap";
+import { useAuth } from "context/AuthContext";
 
 const TeacherNavbar = (props) => {
-  const [user, setUser] = useState({ firstName: '', lastName: '' });
+  const [user, setUser] = useState({ nombreCompleto: '', userId: '', rol: '' });
+  const { auth } = useAuth();
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/user?id=1`);
+        const response = await axios.get(`http://localhost:5000/api/user?id=${auth.userId}`);
         if (response.data.success) {
-          setUser({ firstName: response.data.firstName, lastName: response.data.lastName });
+          setUser({ nombreCompleto: response.data.nombreCompleto, userId: response.data.userId, rol: response.data.rol });
         } else {
           console.error("Error al obtener los datos del usuario:", response.data.message);
         }
@@ -62,7 +64,7 @@ const TeacherNavbar = (props) => {
                 <span className="avatar avatar-sm rounded-circle">
                   <img
                     alt="..."
-                    src={require("../../assets/img/brand/teacher-avatar.png")}
+                    src={require("../../assets/img/brand/argon-react.png")}
                   />
                 </span>
                 <Media className="ml-2 d-none d-lg-block">
