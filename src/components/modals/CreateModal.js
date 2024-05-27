@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Row, Col } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Row, Col, Alert } from 'reactstrap';
 
 const EditModal = ({ isOpen, toggle, onSave, user }) => {
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',
     email: '',
-    password: '', // Nuevo campo de contraseña
-    rol: '', // Nuevo campo de rol
+    password: '',
+    confirmPassword: '',
+    rol: '',
   });
+
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -16,7 +19,8 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
         nombre: user.nombre || '',
         apellido: user.apellido || '',
         email: user.email || '',
-        password: '', // La contraseña no se inicializa para evitar mostrarla en el formulario
+        password: '',
+        confirmPassword: '',
         rol: user.rol || '',
       });
     }
@@ -30,14 +34,60 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
     });
   };
 
+  const validateInputs = () => {
+    const { nombre, apellido, email, password, confirmPassword, rol } = formData;
+    const namePattern = /^[a-zA-Z]+$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const passwordPattern = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+
+    if (Object.values(formData).some((value) => value === '')) {
+      return "Por favor, complete todos los campos.";
+    }
+
+    if (!nombre.match(namePattern) || !apellido.match(namePattern)) {
+      return "Los nombres y apellidos solo deben contener letras.";
+    }
+
+    if (!email.match(emailPattern)) {
+      return "Por favor, ingrese un correo electrónico válido.";
+    }
+
+    if (!password.match(passwordPattern)) {
+      return "La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula y un número.";
+    }
+
+    if (password !== confirmPassword) {
+      return "Las contraseñas no coinciden.";
+    }
+
+    return '';
+  };
+
   const handleSubmit = () => {
+    const error = validateInputs();
+    if (error) {
+      setErrorMessage(error);
+      return;
+    }
+
     onSave(formData);
+    setFormData({
+      nombre: '',
+      apellido: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      rol: '',
+    });
+    setErrorMessage('');
+    toggle();
   };
 
   return (
     <Modal isOpen={isOpen} toggle={toggle}>
       <ModalHeader toggle={toggle}>Agregar Usuario</ModalHeader>
       <ModalBody>
+        {errorMessage && <Alert color="danger">{errorMessage}</Alert>}
         <Form>
           <Row>
             <Col md={6}>
@@ -49,6 +99,9 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
                   id="nombre"
                   value={formData.nombre}
                   onChange={handleChange}
+                  required
+                  pattern="[a-zA-Z]+"
+                  title="Solo se permiten letras"
                 />
               </FormGroup>
             </Col>
@@ -61,6 +114,9 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
                   id="apellido"
                   value={formData.apellido}
                   onChange={handleChange}
+                  required
+                  pattern="[a-zA-Z]+"
+                  title="Solo se permiten letras"
                 />
               </FormGroup>
             </Col>
@@ -75,9 +131,29 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
                   id="email"
                   value={formData.email}
                   onChange={handleChange}
+                  required
                 />
               </FormGroup>
             </Col>
+            <Col md={6}>
+              <FormGroup>
+                <Label for="rol">Rol</Label>
+                <Input
+                  type="select"
+                  name="rol"
+                  id="rol"
+                  value={formData.rol}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Seleccionar Rol</option>
+                  <option value="administrador">Administrador</option>
+                  <option value="docente">Docente</option>
+                </Input>
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row>
             <Col md={6}>
               <FormGroup>
                 <Label for="password">Contraseña</Label>
@@ -87,25 +163,23 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
                   id="password"
                   value={formData.password}
                   onChange={handleChange}
+                  required
+                  pattern="^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$"
+                  title="La contraseña debe tener al menos 8 caracteres, incluyendo una letra mayúscula y un número."
                 />
               </FormGroup>
             </Col>
-          </Row>
-          <Row>
-            <Col md={12}>
+            <Col md={6}>
               <FormGroup>
-                <Label for="rol">Rol</Label>
+                <Label for="confirmPassword">Confirmar Contraseña</Label>
                 <Input
-                  type="select"
-                  name="rol"
-                  id="rol"
-                  value={formData.rol}
+                  type="password"
+                  name="confirmPassword"
+                  id="confirmPassword"
+                  value={formData.confirmPassword}
                   onChange={handleChange}
-                >
-                  <option value="">Seleccionar Rol</option>
-                  <option value="administrador">Administrador</option>
-                  <option value="docente">Docente</option>
-                </Input>
+                  required
+                />
               </FormGroup>
             </Col>
           </Row>

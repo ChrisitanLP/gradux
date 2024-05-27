@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Row, Col } from 'reactstrap';
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, Row, Col, Alert } from 'reactstrap';
 
 const EditModal = ({ isOpen, toggle, onSave, user }) => {
   const [formData, setFormData] = useState({
     nombre: '',
     apellido: '',
     email: '',
-    password: '', // Nuevo campo de contraseña
-    rol: '', // Nuevo campo de rol
+    password: '',
+    rol: '',
   });
+
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -16,7 +18,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
         nombre: user.nombre || '',
         apellido: user.apellido || '',
         email: user.email || '',
-        password: user.password || '', // La contraseña no se inicializa para evitar mostrarla en el formulario
+        password: '',
         rol: user.rol || '',
       });
     }
@@ -30,14 +32,53 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
     });
   };
 
+  const validateInputs = () => {
+    const { nombre, apellido, email, rol } = formData;
+    const namePattern = /^[a-zA-Z]+$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Verificar campos vacíos
+    if (Object.values(formData).some((value) => value === '' && value !== formData.password)) {
+      return "Por favor, complete todos los campos.";
+    }
+
+    // Verificar que los nombres solo contienen letras
+    if (!nombre.match(namePattern) || !apellido.match(namePattern)) {
+      return "Los nombres y apellidos solo deben contener letras.";
+    }
+
+    // Verificar formato de email
+    if (!email.match(emailPattern)) {
+      return "Por favor, ingrese un correo electrónico válido.";
+    }
+
+    return '';
+  };
+
   const handleSubmit = () => {
+    const error = validateInputs();
+    if (error) {
+      setErrorMessage(error);
+      return;
+    }
+
     onSave(formData);
+    setFormData({
+      nombre: '',
+      apellido: '',
+      email: '',
+      password: '',
+      rol: '',
+    });
+    setErrorMessage('');
+    toggle();
   };
 
   return (
     <Modal isOpen={isOpen} toggle={toggle}>
       <ModalHeader toggle={toggle}>Editar Usuario</ModalHeader>
       <ModalBody>
+        {errorMessage && <Alert color="danger">{errorMessage}</Alert>}
         <Form>
           <Row>
             <Col md={6}>
@@ -49,6 +90,9 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
                   id="nombre"
                   value={formData.nombre}
                   onChange={handleChange}
+                  required
+                  pattern="[a-zA-Z]+"
+                  title="Solo se permiten letras"
                 />
               </FormGroup>
             </Col>
@@ -61,6 +105,9 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
                   id="apellido"
                   value={formData.apellido}
                   onChange={handleChange}
+                  required
+                  pattern="[a-zA-Z]+"
+                  title="Solo se permiten letras"
                 />
               </FormGroup>
             </Col>
@@ -75,10 +122,10 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
                   id="email"
                   value={formData.email}
                   onChange={handleChange}
+                  required
                 />
               </FormGroup>
             </Col>
-            
           </Row>
           <Row>
             <Col md={12}>
@@ -90,6 +137,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
                   id="rol"
                   value={formData.rol}
                   onChange={handleChange}
+                  required
                 >
                   <option value="">Seleccionar Rol</option>
                   <option value="administrador">Administrador</option>
