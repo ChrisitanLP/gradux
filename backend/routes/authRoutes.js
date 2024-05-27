@@ -44,4 +44,12 @@ router.get('/carreras', authController.getAllCarreras);
 router.get('/users', authController.getAllUsuarios);
 router.get('/teachers', authController.getAllDocentes);
 
+// Ruta para obtener la cantidad de estudiantes graduados por tutor
+router.get('/graduados/:tutorId', authController.getGraduadosCount);
+router.get('/enprogreso/:tutorId', authController.getEnProgresoCount);
+router.get('/retirados/:tutorId', authController.getRetiradosCount);
+
+// Ruta para obtener todos los estudiantes a cargo de un tutor específico
+router.get('/bytutor/:tutorId', authController.getStudentsByTutor);
+
 module.exports = router;

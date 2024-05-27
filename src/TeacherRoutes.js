@@ -31,16 +31,16 @@ var routes = [
     layout: "/teacher",
   },
   {
-    path: "/teachers",
-    name: "Teachers",
+    path: "/students",
+    name: "Estudiantes",
     icon: "ni ni-hat-3 text-blue",
     component: <Teachers />,
     layout: "/teacher",
   },
   {
     path: "/user-profile",
-    name: "User Profile",
-    icon: "ni ni-single-02 text-yellow",
+    name: "Perfil de Usuario",
+    icon: "ni ni-single-02 text-red",
     component: <Profile />,
     layout: "/teacher",
   },
@@ -50,20 +50,6 @@ var routes = [
     icon: "ni ni-key-25 text-info",
     component: <Login />,
     layout: "/auth",
-  },
-  {
-    path: "/users",
-    name: "Users",
-    icon: "ni ni-single-02 text-blue",
-    component: <Users />,
-    layout: "/teacher",
-  },
-  {
-    path: "/examples",
-    name: "Examples",
-    icon: "ni ni-bullet-list-67 text-red",
-    component: <Examples />,
-    layout: "/teacher",
   },
 ];
 export default routes;

@@ -2,8 +2,17 @@ import React from 'react';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { InputText } from 'primereact/inputtext';
-import { Card, CardHeader, Container, Row } from 'reactstrap';
+import { Card, CardHeader, CardBody, Container, Row, Col, } from 'reactstrap';
 import Header from 'components/Headers/Header';
+import Chart from "chart.js";
+import { Line, Bar } from "react-chartjs-2";
+import {
+    chartOptions,
+    parseOptions,
+    chartExample1,
+    chartExample2,
+  } from "variables/charts.js";
+  
 
 const Tables = () => {
     const cars = [
@@ -19,10 +28,7 @@ const Tables = () => {
     const header = (
         <div className="table-header">
             <h3 className="mb-0">Registro Estudiantes</h3>
-            <span className="p-input-icon">
-                <i className="pi pi-search" />
-                <InputText type="search" onInput={(e) => console.log(e.target.value)} placeholder="Search..." />
-            </span>
+            
         </div>
     );
 

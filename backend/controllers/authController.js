@@ -315,3 +315,73 @@ exports.updateStudentById = (req, res) => {
     }
   );
 };
+
+
+// Obtener cantidad de estudiantes graduados por tutor
+exports.getGraduadosCount = (req, res) => {
+  const tutorId = req.params.tutorId;
+  db.query('SELECT COUNT(*) AS count FROM estudiantes WHERE estado_estudiante = "Graduado" AND id_tutor = ?', [tutorId], (err, results) => {
+    if (err) {
+      console.error('Error al obtener el número de estudiantes graduados:', err);
+      return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+    res.json({ success: true, count: results[0].count });
+  });
+};
+
+// Obtener cantidad de estudiantes en progreso por tutor
+exports.getEnProgresoCount = (req, res) => {
+  const tutorId = req.params.tutorId;
+  db.query('SELECT COUNT(*) AS count FROM estudiantes WHERE estado_estudiante = "En progreso" AND id_tutor = ?', [tutorId], (err, results) => {
+    if (err) {
+      console.error('Error al obtener el número de estudiantes en progreso:', err);
+      return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+    res.json({ success: true, count: results[0].count });
+  });
+};
+
+// Obtener cantidad de estudiantes retirados por tutor
+exports.getRetiradosCount = (req, res) => {
+  const tutorId = req.params.tutorId;
+  db.query('SELECT COUNT(*) AS count FROM estudiantes WHERE estado_estudiante = "Retirado" AND id_tutor = ?', [tutorId], (err, results) => {
+    if (err) {
+      console.error('Error al obtener el número de estudiantes retirados:', err);
+      return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+    res.json({ success: true, count: results[0].count });
+  });
+};
+
+// Obtener todos los estudiantes a cargo de un tutor específico
+exports.getStudentsByTutor = (req, res) => {
+  const tutorId = req.params.tutorId;
+  db.query(
+    `SELECT 
+      e.id_estudiante, 
+      e.nombre1, 
+      e.nombre2, 
+      e.apellido1, 
+      e.apellido2, 
+      c.nombre_carrera, 
+      CONCAT(u.nombre, " ", u.apellido) AS nombre_tutor, 
+      e.fecha_asignacion_tutor, 
+      e.tema_tesis, 
+      e.fecha_aprobacion_tema, 
+      e.estado_estudiante 
+    FROM 
+      estudiantes e 
+      LEFT JOIN carreras c ON e.id_carrera = c.id_carrera 
+      LEFT JOIN usuarios u ON e.id_tutor = u.id 
+    WHERE 
+      e.id_tutor = ?`, 
+    [tutorId], 
+    (err, results) => {
+      if (err) {
+        console.error('Error al obtener los estudiantes:', err);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+      }
+      res.json({ success: true, students: results });
+    }
+  );
+};

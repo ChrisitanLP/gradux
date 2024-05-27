@@ -14,25 +14,27 @@ import {
 import { useAuth } from "context/AuthContext";
 
 const TeacherNavbar = (props) => {
-  const [user, setUser] = useState({ nombreCompleto: '', userId: '', rol: '' });
+  const [user, setUser] = useState({ nombre: '', apellido: '' });
   const { auth } = useAuth();
 
   useEffect(() => {
     const fetchUser = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5000/api/user?id=${auth.userId}`);
-        if (response.data.success) {
-          setUser({ nombreCompleto: response.data.nombreCompleto, userId: response.data.userId, rol: response.data.rol });
-        } else {
-          console.error("Error al obtener los datos del usuario:", response.data.message);
+      if (auth.userId) {
+        try {
+          const response = await axios.get(`http://localhost:5000/api/usuarios/${auth.userId}`);
+          if (response.data.success) {
+            setUser(response.data.user);
+          } else {
+            console.error("Error al obtener los datos del usuario:", response.data.message);
+          }
+        } catch (error) {
+          console.error("Error al obtener los datos del usuario:", error);
         }
-      } catch (error) {
-        console.error("Error al obtener los datos del usuario:", error);
       }
     };
 
     fetchUser();
-  }, []);
+  }, [auth.userId]);
 
   const handleLogout = async () => {
     try {
@@ -64,12 +66,12 @@ const TeacherNavbar = (props) => {
                 <span className="avatar avatar-sm rounded-circle">
                   <img
                     alt="..."
-                    src={require("../../assets/img/brand/argon-react.png")}
+                    src={require("../../assets/img/theme/perfil1.png")}
                   />
                 </span>
                 <Media className="ml-2 d-none d-lg-block">
                   <span className="mb-0 text-sm font-weight-bold">
-                    {user.firstName} {user.lastName}
+                    {user.nombre} {user.apellido}
                   </span>
                 </Media>
               </Media>

@@ -1,3 +1,5 @@
+// src/components/navbars/AdminNavbar.js
+
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -14,31 +16,32 @@ import {
 import { useAuth } from "context/AuthContext";
 
 const AdminNavbar = (props) => {
-  const [user, setUser] = useState({ nombreCompleto: '', userId: '', rol: '' });
+  const [user, setUser] = useState({ nombre: '', apellido: '' });
   const { auth } = useAuth();
 
   useEffect(() => {
     const fetchUser = async () => {
-      try {
-        const response = await axios.get(`http://localhost:5000/api/user?id=${auth.userId}`);
-        if (response.data.success) {
-          setUser({ nombreCompleto: response.data.nombreCompleto, userId: response.data.userId, rol: response.data.rol });
-        } else {
-          console.error("Error al obtener los datos del usuario:", response.data.message);
+      if (auth.userId) {
+        try {
+          const response = await axios.get(`http://localhost:5000/api/usuarios/${auth.userId}`);
+          if (response.data.success) {
+            setUser(response.data.user);
+          } else {
+            console.error("Error al obtener los datos del usuario:", response.data.message);
+          }
+        } catch (error) {
+          console.error("Error al obtener los datos del usuario:", error);
         }
-      } catch (error) {
-        console.error("Error al obtener los datos del usuario:", error);
       }
     };
 
     fetchUser();
-  }, []);
+  }, [auth.userId]);
 
   const handleLogout = async () => {
     try {
       const response = await axios.post("http://localhost:5000/api/logout", {}, { withCredentials: true });
       if (response.data.success) {
-        localStorage.removeItem("isLoggedIn");
         window.location.href = "/auth/login"; // Redirige a la página de inicio de sesión
       } else {
         console.error("Error al cerrar sesión:", response.data.message);
@@ -69,7 +72,7 @@ const AdminNavbar = (props) => {
                 </span>
                 <Media className="ml-2 d-none d-lg-block">
                   <span className="mb-0 text-sm font-weight-bold">
-                    {user.firstName} {user.lastName}
+                    {user.nombre} {user.apellido}
                   </span>
                 </Media>
               </Media>

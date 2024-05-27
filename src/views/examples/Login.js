@@ -50,9 +50,9 @@ const Login = () => {
   };
 
   if (auth.isLoggedIn) {
-    if (auth.rol == 'administrador'){
+    if (auth.rol === 'administrador') {
       return <Navigate to="/admin/index" replace />;
-    }else if (auth.rol == 'docente'){
+    } else if (auth.rol === 'docente') {
       return <Navigate to="/teacher/index" replace />;
     }
   }

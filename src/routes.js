@@ -44,13 +44,6 @@ var routes = [
     layout: "/admin",
   },
   {
-    path: "/examples",
-    name: "Examples",
-    icon: "ni ni-hat-3 text-blue",
-    component: <Examples />,
-    layout: "/admin",
-  },
-  {
     path: "/login",
     name: "Login",
     icon: "ni ni-key-25 text-info",
