@@ -22,6 +22,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
         password: '',
         confirmPassword: '',
         rol: user.rol || '',
+        estado: user.estado || ''
       });
     }
   }, [user]);

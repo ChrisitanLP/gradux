@@ -37,6 +37,7 @@ const Login = () => {
         { email, password },
         { withCredentials: true }
       );
+      console.log("RES",response.data)
 
       if (response.data.success) {
         login();
@@ -45,7 +46,8 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Error al iniciar sesión:", error);
-      setLoginError("Error al iniciar sesión. Inténtelo de nuevo más tarde.");
+      setLoginError(error.response.data.message);
+     
     }
   };
 
@@ -56,6 +58,8 @@ const Login = () => {
       return <Navigate to="/teacher/index" replace />;
     }
   }
+
+  
 
   return (
     <Col lg="5" md="7">
