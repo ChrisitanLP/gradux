@@ -1,7 +1,7 @@
 // src/context/AuthContext.js
-
 import React, { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
+import "../axiosConfig"; // Importa tu configuración de axios aquí
 
 const AuthContext = createContext();
 
@@ -10,10 +10,13 @@ export const AuthProvider = ({ children }) => {
 
   const checkAuth = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/api/check-auth", { withCredentials: true });
+      const response = await axios.get("http://localhost:5000/api/check-auth", {
+        withCredentials: true
+      });
       setAuth(response.data);
     } catch (error) {
       console.error("Error al verificar autenticación:", error);
+      setAuth({});
     }
   };
 
@@ -21,13 +24,19 @@ export const AuthProvider = ({ children }) => {
     checkAuth();
   }, []);
 
-  const login = () => {
+  const login = (userData) => {
+    setAuth(userData);
     checkAuth();
   };
 
-  const logout = () => {
+  const logout = async () => {
+    localStorage.removeItem('token');
     setAuth({});
-    axios.post("http://localhost:5000/api/logout", {}, { withCredentials: true });
+    try {
+      await axios.post("http://localhost:5000/api/logout", {}, { withCredentials: true });
+    } catch (error) {
+      console.error("Error al cerrar sesión:", error);
+    }
   };
 
   return (

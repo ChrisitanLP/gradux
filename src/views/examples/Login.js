@@ -39,7 +39,8 @@ const Login = () => {
       );
 
       if (response.data.success) {
-        login();
+        localStorage.setItem("token", response.data.token);
+        login(response.data.user);
       } else {
         setLoginError(response.data.message);
       }

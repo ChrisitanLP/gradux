@@ -22,15 +22,14 @@ app.use(session({
   cookie: { secure: false } // Cambiar a true si se usa HTTPS
 }));
 
-// Rutas
+// Rutas públicas (no requieren autenticación)
 app.use('/api', authRoutes);
 
 // Middleware de autenticación para proteger rutas
 app.use('/api/admin', authMiddleware.requireAuth); // Protege todas las rutas bajo /api/admin
 
 // Rutas protegidas
-app.use('/api/admin', authRoutes); // Utiliza las rutas de autenticación dentro de /api/admin
-
+app.use('//admin', authRoutes); // Utiliza las rutas de autenticación dentro de //admin
 
 // Iniciar el servidor
 app.listen(PORT, () => console.log(`Servidor en ejecución en el puerto ${PORT}`));

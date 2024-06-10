@@ -3,14 +3,8 @@ const bcrypt = require('bcrypt');
 const session = require('express-session');
 const express = require('express');
 const app = express();
+const { generateAccessToken } = require('../config/auth');
 
-// Configurar la sesión
-app.use(session({
-  secret: 'your_secret_key',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: false } // Cambiar a true si se usa HTTPS
-}));
 
 exports.login = (req, res) => {
   const { email, password } = req.body;
@@ -32,8 +26,13 @@ exports.login = (req, res) => {
       return res.status(401).json({ success: false, error: 'invalid_password', message: 'Contraseña incorrecta' });
     }
 
-    req.session.user = user;
-    res.json({ success: true, message: 'Inicio de sesión exitoso' });
+    const accessToken = generateAccessToken(user);
+    res.json({
+      success: true,
+      message: 'Inicio de sesión exitoso',
+      token: accessToken,
+      user: { id: user.id, email: user.email, rol: user.rol } // Opcional: puedes incluir información adicional del usuario en el token si lo deseas
+    });
   });
 };
 
