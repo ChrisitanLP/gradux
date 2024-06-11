@@ -21531,3 +21531,7 @@ button:focus,
 }
 
 /*# sourceMappingURL=argon-dashboard-react.css.map */
+.table-header-custom {
+  background-color: #007bff; /* Cambia este color según tus preferencias */
+  color: white;
+}

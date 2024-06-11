@@ -19567,3 +19567,7 @@ button:focus,
 .table .badge i {
   margin-right: 10px;
 }
+.table-header-custom {
+  background-color: #007bff; /* Cambia este color según tus preferencias */
+  color: white;
+}

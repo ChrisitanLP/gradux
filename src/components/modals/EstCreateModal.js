@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, FormGroup, Label, Input, Row, Col, Alert } from 'reactstrap';
-import { fetchCarreras, fetchUsuarios } from 'api/common';
+import { fetchCarreras } from 'api/common';
 
-const ECreateModal = ({ isOpen, toggle, onSave }) => {
+const ECreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
   const [studentData, setStudentData] = useState({
     nombre1: '',
     nombre2: '',
@@ -13,17 +13,15 @@ const ECreateModal = ({ isOpen, toggle, onSave }) => {
     tema_tesis: '',
     fecha_aprobacion_tema: '',
     estado_estudiante: 'En progreso',
-    id_tutor: '',
+    id_tutor: tutorId,  // Set tutorId directly here
     cedula: ''
   });
   const [carreras, setCarreras] = useState([]);
-  const [tutores, setTutores] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
   const [cedulaError, setCedulaError] = useState('');
 
   useEffect(() => {
     fetchCarreras().then((carrerasData) => setCarreras(carrerasData));
-    fetchUsuarios().then((usuariosData) => setTutores(usuariosData));
   }, []);
 
   const handleInputChange = (e) => {
@@ -67,7 +65,7 @@ const ECreateModal = ({ isOpen, toggle, onSave }) => {
   };
 
   const validateInputs = () => {
-    const { nombre1, nombre2, apellido1, apellido2, id_carrera, fecha_asignacion_tutor, tema_tesis, fecha_aprobacion_tema, id_tutor, cedula } = studentData;
+    const { nombre1, nombre2, apellido1, apellido2, id_carrera, fecha_asignacion_tutor, tema_tesis, fecha_aprobacion_tema, cedula } = studentData;
     const namePattern = /^[a-zA-Z]+$/;
 
     if (Object.values(studentData).some(value => value === '')) {
@@ -105,7 +103,7 @@ const ECreateModal = ({ isOpen, toggle, onSave }) => {
       tema_tesis: '',
       fecha_aprobacion_tema: '',
       estado_estudiante: 'En progreso',
-      id_tutor: '',
+      id_tutor: tutorId,  // Reset tutorId here as well
       cedula: ''
     });
     setErrorMessage('');
@@ -129,7 +127,6 @@ const ECreateModal = ({ isOpen, toggle, onSave }) => {
             title="Ingrese una cédula válida"
             maxLength="10"
           />
-          
         </FormGroup>
         <Row>
           <Col md={6}>
@@ -245,22 +242,6 @@ const ECreateModal = ({ isOpen, toggle, onSave }) => {
             onChange={handleInputChange}
             required
           />
-        </FormGroup>
-        <FormGroup>
-          <Label for="id_tutor">Tutor</Label>
-          <Input
-            type="select"
-            name="id_tutor"
-            id="id_tutor"
-            value={studentData.id_tutor}
-            onChange={handleInputChange}
-            required
-          >
-            <option value="">Seleccionar Tutor</option>
-            {tutores.map((tutor) => (
-              <option key={tutor.id} value={tutor.id}>{tutor.nombre} {tutor.apellido}</option>
-            ))}
-          </Input>
         </FormGroup>
       </ModalBody>
       <ModalFooter>

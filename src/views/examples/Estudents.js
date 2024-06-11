@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, CardHeader, Table, Container, Row, Col } from 'reactstrap';
+import { Button, Card, Container, Row, Col, Input } from 'reactstrap';
 import Header from 'components/Headers/Header';
-import ECreateModal from 'components/modals/ECreateModal'; // Importamos ECreateModal correctamente
+import ECreateModal from 'components/modals/ECreateModal'; 
 import EDeleteModal from 'components/modals/EDeleteModal';
 import EEditModal from 'components/modals/EEditModal';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import { fetchStudents, deleteStudent, createStudent, updateStudent } from 'api/students';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faPlus } from '@fortawesome/free-solid-svg-icons';
 
 const Estudents = () => {
   const [students, setStudents] = useState([]);
+  const [globalFilter, setGlobalFilter] = useState(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -71,6 +74,42 @@ const Estudents = () => {
     }
   };
 
+  const actionBodyTemplate = (rowData) => {
+    return (
+      <>
+        <Button color="primary" onClick={() => { setSelectedStudent(rowData); toggleEditModal(); }}>
+          <FontAwesomeIcon icon={faEdit} />
+        </Button>
+        <Button color="danger" onClick={() => { setSelectedStudent(rowData); toggleDeleteModal(); }}>
+          <FontAwesomeIcon icon={faTrash} />
+        </Button>
+      </>
+    );
+  };
+
+  const header = (
+    <div className="table-header">
+      <Row className="align-items-center">
+        <div className="col">
+          <h3 className="mb-0">Listado de Estudiantes</h3>
+        </div>
+        <div className="col text-right">
+          <Button color="primary" onClick={toggleCreateModal}>
+            Agregar Estudiante <FontAwesomeIcon icon={faPlus} />
+          </Button>
+        </div>
+        <div className="col">
+          <Input
+            type="search"
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            placeholder="Buscar..."
+          />
+        </div>
+      </Row>
+    </div>
+  );
+
   return (
     <>
       <Header />
@@ -78,53 +117,26 @@ const Estudents = () => {
         <Row className="mt-5">
           <Col className="mb-5 mb-xl-0" xl="12">
             <Card className="shadow">
-              <CardHeader className="border-0">
-                <Row className="align-items-center">
-                  <div className="col">
-                    <h3 className="mb-0">Listado de Estudiantes</h3>
-                  </div>
-                  <div className="col text-right">
-                    <Button color="primary" onClick={toggleCreateModal} >
-                      Agregar Estudiante <FontAwesomeIcon icon={faPlus}/>
-                    </Button>
-                  </div>
-                </Row>
-              </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
-                <thead className="thead-light">
-                  <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Apellido</th>
-                    <th scope="col">Carrera</th>
-                    <th scope="col">Tutor</th>
-                    <th scope="col">Tema de Tesis</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {students.map((student) => (
-                    <tr key={student.id_estudiante}>
-                      <td>{student.id_estudiante}</td>
-                      <td>{student.nombre1} {student.nombre2}</td>
-                      <td>{student.apellido1} {student.apellido2}</td>
-                      <td>{student.nombre_carrera}</td>
-                      <td>{student.nombre_tutor}</td>
-                      <td>{student.tema_tesis}</td>
-                      <td>{student.estado_estudiante}</td>
-                      <td>
-                        <Button color="primary" onClick={() => {setSelectedStudent(student); toggleEditModal();}}>
-                          Editar <FontAwesomeIcon icon={faEdit} />
-                        </Button>{' '}
-                        <Button color="danger" onClick={() => {setSelectedStudent(student); toggleDeleteModal();}}>
-                          Eliminar <FontAwesomeIcon icon={faTrash} />
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
+              
+              <DataTable 
+                value={students} 
+                className="p-datatable-striped"
+                paginator
+                rows={5}
+                rowsPerPageOptions={[5, 10, 20]}
+                globalFilter={globalFilter}
+                header={header}
+              >
+                <Column field="id_estudiante" header="ID" sortable filter filterPlaceholder="Buscar por ID" style={{ maxWidth: '10%' }} />
+                <Column field="cedula" header="Cedula" sortable filter filterPlaceholder="Buscar por cedula" style={{ maxWidth: '15%' }} />
+                <Column field="nombre1" header="Nombre" sortable filter filterPlaceholder="Buscar por nombre" style={{ maxWidth: '10%' }} />
+                <Column field="apellido1" header="Apellido" sortable filter filterPlaceholder="Buscar por apellido" style={{ maxWidth: '10%' }} />
+                <Column field="nombre_carrera" header="Carrera" sortable filter filterPlaceholder="Buscar por carrera" style={{ maxWidth: '15%' }} />
+                <Column field="nombre_tutor" header="Tutor" sortable filter filterPlaceholder="Buscar por tutor" style={{ maxWidth: '15%' }} />
+                <Column field="tema_tesis" header="Tema de Tesis" sortable filter filterPlaceholder="Buscar por tema" style={{ maxWidth: '15%' }} bodyStyle={{ maxWidth: '100px', textOverflow: 'ellipsis', whiteSpace: 'nowrap', overflow: 'hidden' }} />
+                <Column field="estado_estudiante" header="Estado" sortable filter filterPlaceholder="Buscar por estado" style={{ maxWidth: '10%' }} />
+                <Column body={actionBodyTemplate} header="Acciones" style={{ maxWidth: '15%' }} />
+              </DataTable>
             </Card>
           </Col>
         </Row>

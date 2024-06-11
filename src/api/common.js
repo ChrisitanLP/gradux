@@ -23,3 +23,23 @@ export const fetchUsuarios = async () => {
   }
 };
 
+export const fetchTiposInformes = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/tiposInforme`);
+    return response.data.tiposInforme || []; // Si no hay usuarios, devuelve un array vacío
+  } catch (error) {
+    console.error('Error al obtener tipos de informes:', error);
+    throw new Error('Error al obtener tipos de informes'); // Lanza un error para ser manejado en el frontend
+  }
+};
+
+export const fetchEstudiantes = async (tutorId) => {
+  try {
+    const response = await axios.get(`${API_URL}/studentsbyteachers/${tutorId}`);
+    return response.data.estudiantesporDocente|| []; // Si no hay usuarios, devuelve un array vacío
+  } catch (error) {
+    console.error('Error al obtener estudiantes:', error);
+    throw new Error('Error al obtener estudiantes'); // Lanza un error para ser manejado en el frontend
+  }
+};
+

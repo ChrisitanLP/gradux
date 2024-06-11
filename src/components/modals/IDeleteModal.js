@@ -1,16 +1,16 @@
 import React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
 
-const EDeleteModal = ({ isOpen, toggle, onDelete, student }) => {
+const IDeleteModal = ({ isOpen, toggle, onDelete, report }) => {
   const handleDelete = () => {
-    onDelete(student.id_estudiante);
+    onDelete(report.id_informe);
   };
 
   return (
     <Modal isOpen={isOpen} toggle={toggle}>
-      <ModalHeader toggle={toggle}>Eliminar Estudiante</ModalHeader>
+      <ModalHeader toggle={toggle}>Eliminar Informe</ModalHeader>
       <ModalBody>
-        ¿Estás seguro de que quieres eliminar al estudiante {student?.nombre1} {student?.apellido1}?<br />Esta acción no se puede deshacer.
+        ¿Estás seguro de que quieres eliminar el informe <br />Esta acción no se puede deshacer.
       </ModalBody>
       <ModalFooter>
         <Button color="warning" onClick={toggle}>Cancelar</Button>
@@ -20,4 +20,4 @@ const EDeleteModal = ({ isOpen, toggle, onDelete, student }) => {
   );
 };
 
-export default EDeleteModal;
+export default IDeleteModal;

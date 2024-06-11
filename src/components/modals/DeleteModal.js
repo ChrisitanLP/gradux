@@ -20,11 +20,11 @@ const DeleteModal = ({ isOpen, toggle, onDelete, user }) => {
         ¿Está seguro de que desea eliminar al usuario {user?.nombre}?<br />Esta acción no se puede deshacer.
       </ModalBody>
       <ModalFooter>
+        <Button color="warning" onClick={toggle}>
+          Cancelar
+        </Button>
         <Button color="danger" onClick={handleDelete}>
           Eliminar
-        </Button>{' '}
-        <Button color="secondary" onClick={toggle}>
-          Cancelar
         </Button>
       </ModalFooter>
     </Modal>

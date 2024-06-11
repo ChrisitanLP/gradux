@@ -17,10 +17,8 @@
 */
 import Index from "views/Dashboard.js";
 import Profile from "views/examples/Profile.js";
-import Login from "views/examples/Login.js";
-import Users from "views/examples/Users.js";
-import Examples from "views/examples/Examples.js";
 import Teachers from "views/examples/Examples.js";
+import Reports from "views/examples/Reports.js";
 
 var routes = [
   {
@@ -33,8 +31,15 @@ var routes = [
   {
     path: "/students",
     name: "Estudiantes",
-    icon: "ni ni-hat-3 text-blue",
+    icon: "ni ni-hat-3 text-green",
     component: <Teachers />,
+    layout: "/teacher",
+  },
+  {
+    path: "/reports",
+    name: "Informes",
+    icon: "ni ni-single-copy-04 text-blue",
+    component: <Reports />,
     layout: "/teacher",
   },
   {
@@ -44,12 +49,6 @@ var routes = [
     component: <Profile />,
     layout: "/teacher",
   },
-  {
-    path: "/login",
-    name: "Login",
-    icon: "ni ni-key-25 text-info",
-    component: <Login />,
-    layout: "/auth",
-  },
+
 ];
 export default routes;

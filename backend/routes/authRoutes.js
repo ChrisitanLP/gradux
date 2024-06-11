@@ -52,4 +52,26 @@ router.get('/retirados/:tutorId', authController.getRetiradosCount);
 // Ruta para obtener todos los estudiantes a cargo de un tutor específico
 router.get('/bytutor/:tutorId', authController.getStudentsByTutor);
 
+// CRUD Informes
+router.post('/informes', authController.createInforme);
+router.get('/informes', authController.getAllInformes);
+router.get('/informes/:id', authController.getInformeById);
+router.put('/informes/:id', authController.updateInformeById);
+router.delete('/informes/:id', authController.deleteInformeById);
+
+// Obtener informes por tutor
+router.get('/reportsbytutor/:tutorId', authController.getInformesByTutor);
+router.get('/studentsandreportsbytutor/:tutorId', authController.getStudentsAndReportsByTutor);
+
+// Rutas para los informes
+router.get('/tiposInforme', authController.getAllTypesReports);
+router.get('/studentsbyteachers/:tutorId', authController.getStudentsByUsersId);
+
+// CRUD Actividades
+router.post('/actividades', authController.createActivity);
+router.get('/actividades', authController.getAllActivities);
+router.get('/actividades/:id', authController.getActivityById);
+router.put('/actividades/:id', authController.updateActivityById);
+router.delete('/actividades/:id', authController.deleteActivityById);
+
 module.exports = router;

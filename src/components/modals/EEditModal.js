@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, FormGroup, Label, Input, Row, Col, Alert } from 'reactstrap';
-import { fetchCarreras, fetchUsuarios } from 'api/common';
 
 const EEditModal = ({ isOpen, toggle, onSave, student }) => {
   const [studentData, setStudentData] = useState({
@@ -12,14 +11,7 @@ const EEditModal = ({ isOpen, toggle, onSave, student }) => {
     id_tutor: ''
   });
 
-  const [carreras, setCarreras] = useState([]);
-  const [tutores, setTutores] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
-
-  useEffect(() => {
-    fetchCarreras().then((carrerasData) => setCarreras(carrerasData));
-    fetchUsuarios().then((usuariosData) => setTutores(usuariosData));
-  }, []);
 
   useEffect(() => {
     if (student) {
@@ -28,8 +20,7 @@ const EEditModal = ({ isOpen, toggle, onSave, student }) => {
         nombre2: student.nombre2 || '',
         apellido1: student.apellido1 || '',
         apellido2: student.apellido2 || '',
-        estado_estudiante: student.estado_estudiante || 'En progreso',
-        id_tutor: student.id_tutor || ''
+        estado_estudiante: student.estado_estudiante || 'En progreso'
       });
     }
   }, [student]);
@@ -40,7 +31,7 @@ const EEditModal = ({ isOpen, toggle, onSave, student }) => {
   };
 
   const validateInputs = () => {
-    const { nombre1, nombre2, apellido1, apellido2, id_tutor, estado_estudiante } = studentData;
+    const { nombre1, nombre2, apellido1, apellido2, estado_estudiante } = studentData;
     const namePattern = /^[a-zA-Z]+$/;
 
     if (Object.values(studentData).some(value => value === '')) {
@@ -68,7 +59,6 @@ const EEditModal = ({ isOpen, toggle, onSave, student }) => {
       apellido1: '',
       apellido2: '',
       estado_estudiante: 'En progreso',
-      id_tutor: ''
     });
     setErrorMessage('');
     toggle();
@@ -140,22 +130,6 @@ const EEditModal = ({ isOpen, toggle, onSave, student }) => {
           </Col>
         </Row>
         <FormGroup>
-          <Label for="id_tutor">Tutor</Label>
-          <Input
-            type="select"
-            name="id_tutor"
-            id="id_tutor"
-            value={studentData.id_tutor}
-            onChange={handleInputChange}
-            required
-          >
-            <option value="">Seleccionar Tutor</option>
-            {tutores.map((tutor) => (
-              <option key={tutor.id} value={tutor.id}>{tutor.nombre} {tutor.apellido}</option>
-            ))}
-          </Input>
-        </FormGroup>
-        <FormGroup>
           <Label for="estado_estudiante">Estado del Estudiante</Label>
           <Input
             type="select"
@@ -172,8 +146,8 @@ const EEditModal = ({ isOpen, toggle, onSave, student }) => {
         </FormGroup>
       </ModalBody>
       <ModalFooter>
-        <Button color="primary" onClick={handleSave}>Guardar</Button>{' '}
-        <Button color="secondary" onClick={toggle}>Cancelar</Button>
+        <Button color="warning" onClick={toggle}>Cancelar</Button>
+        <Button color="info" onClick={handleSave}>Guardar</Button>
       </ModalFooter>
     </Modal>
   );
