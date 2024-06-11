@@ -8,6 +8,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
     email: '',
     password: '',
     rol: '',
+    estado:'',
   });
 
   const [errorMessage, setErrorMessage] = useState('');
@@ -20,6 +21,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
         email: user.email || '',
         password: '',
         rol: user.rol || '',
+        estado: user.estado || ''
       });
     }
   }, [user]);
@@ -33,7 +35,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
   };
 
   const validateInputs = () => {
-    const { nombre, apellido, email, rol } = formData;
+    const { nombre, apellido, email, rol ,estado} = formData;
     const namePattern = /^[a-zA-Z]+$/;
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -69,6 +71,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
       email: '',
       password: '',
       rol: '',
+      estado:'',
     });
     setErrorMessage('');
     toggle();
@@ -127,13 +130,50 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
               </FormGroup>
             </Col>
           </Row>
+          <Row>
+            <Col md={12}>
+              <FormGroup>
+                <Label for="rol">Rol</Label>
+                <Input
+                  type="select"
+                  name="rol"
+                  id="rol"
+                  value={formData.rol}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Seleccionar Rol</option>
+                  <option value="administrador">Administrador</option>
+                  <option value="docente">Docente</option>
+                </Input>
+              </FormGroup>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={6}>
+              <FormGroup>
+                <Label for="estado">Estado</Label>
+                <Input
+                  type="select"
+                  name="estado"
+                  id="estado"
+                  value={formData.estado}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="activo">Activado</option>
+                  <option value="bloqueado">Bloqueado</option>
+                </Input>
+              </FormGroup>
+            </Col>
+          </Row>
         </Form>
       </ModalBody>
       <ModalFooter>
-        <Button color="warning" onClick={toggle}>
+        <Button color="secondary" onClick={toggle}>
           Cancelar
         </Button>
-        <Button color="info" onClick={handleSubmit}>
+        <Button color="primary" onClick={handleSubmit}>
           Guardar
         </Button>
       </ModalFooter>

@@ -26,11 +26,38 @@ exports.login = (req, res) => {
     }
 
     const user = results[0];
-    const isMatch = await bcrypt.compare(password, user.password);
 
+    if (user.estado === 'bloqueado') {
+      return res.status(401).json({ success: false, error: 'account_blocked', message: 'La cuenta está bloqueada. Contacte al administrador.' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    const updatedAttempts = user.intentos_login + 1;
     if (!isMatch) {
+            
+      db.query('UPDATE usuarios SET intentos_login = ? WHERE id = ?', [updatedAttempts, user.id], (err, results) => {
+        if (err) {
+          console.error('Error al actualizar el contador de intentos fallidos:', err);
+        }
+      });
+
+      if (updatedAttempts >= 3) {
+        db.query('UPDATE usuarios SET estado = "bloqueado" WHERE id = ?', [user.id], (err, results) => {
+          if (err) {
+            console.error('Error al bloquear la cuenta del usuario:', err);
+          }
+        });
+      }
+
       return res.status(401).json({ success: false, error: 'invalid_password', message: 'Contraseña incorrecta' });
     }
+
+    // Reiniciar el contador de intentos fallidos si el inicio de sesión es exitoso
+    db.query('UPDATE usuarios SET intentos_login = 0 WHERE id = ?', [user.id], (err, results) => {
+      if (err) {
+        console.error('Error al reiniciar el contador de intentos fallidos:', err);
+      }
+    });
 
     req.session.user = user;
     res.json({ success: true, message: 'Inicio de sesión exitoso' });
@@ -212,12 +239,21 @@ exports.deleteUserById = (req, res) => {
 // Función para actualizar un usuario por su ID
 exports.updateUserById = async (req, res) => {
   const userId = req.params.id;
-  const { email, nombre, apellido, rol } = req.body;
+  const { email, nombre, apellido, rol, estado } = req.body; // Agrega estado al destructuring
 
   try {
     // Construir la consulta de actualización dinámicamente
-    let query = 'UPDATE usuarios SET email = ?, nombre = ?, apellido = ? WHERE id = ?';
-    let values = [email, nombre, apellido, userId];
+    let query, values;
+
+    if (estado === 'activo') {
+      // Si el estado es 'bloqueado', restablecer los intentos de inicio de sesión a 0
+      query = 'UPDATE usuarios SET email = ?, nombre = ?, apellido = ?, rol = ?, estado = ?, intentos_login = 0 WHERE id = ?';
+      values = [email, nombre, apellido, rol, estado, userId];
+    } else {
+      // Si el estado es diferente de 'bloqueado', solo actualizar los datos sin modificar los intentos de inicio de sesión
+      query = 'UPDATE usuarios SET email = ?, nombre = ?, apellido = ?, rol = ?, estado = ? WHERE id = ?';
+      values = [email, nombre, apellido, rol, estado, userId];
+    }
 
     db.query(query, values, (err, results) => {
       if (err) {
@@ -234,7 +270,6 @@ exports.updateUserById = async (req, res) => {
     return res.status(500).json({ success: false, message: 'Error al actualizar el usuario' });
   }
 };
-
 
 //CRUD ***************************************************************************************************************************
 // Función para crear un nuevo estudiante
