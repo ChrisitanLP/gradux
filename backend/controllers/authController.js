@@ -237,6 +237,9 @@ exports.deleteUserById = (req, res) => {
   });
 };
 
+
+
+
 // Función para actualizar un usuario por su ID
 exports.updateUserById = async (req, res) => {
   const userId = req.params.id;
