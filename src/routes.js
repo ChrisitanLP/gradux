@@ -24,7 +24,7 @@ import Estudents from "views/examples/Estudents";
 var routes = [
   {
     path: "/index",
-    name: "Dashboard",
+    name: "Información",
     icon: "ni ni-tv-2 text-primary",
     component: <Index />,
     layout: "/admin",

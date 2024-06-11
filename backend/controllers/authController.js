@@ -239,7 +239,7 @@ exports.deleteUserById = (req, res) => {
 // Función para actualizar un usuario por su ID
 exports.updateUserById = async (req, res) => {
   const userId = req.params.id;
-  const { email, nombre, apellido, rol, estado } = req.body; // Agrega estado al destructuring
+  const { email, nombre, apellido, estado } = req.body; // Agrega estado al destructuring
 
   try {
     // Construir la consulta de actualización dinámicamente
@@ -247,12 +247,12 @@ exports.updateUserById = async (req, res) => {
 
     if (estado === 'activo') {
       // Si el estado es 'bloqueado', restablecer los intentos de inicio de sesión a 0
-      query = 'UPDATE usuarios SET email = ?, nombre = ?, apellido = ?, rol = ?, estado = ?, intentos_login = 0 WHERE id = ?';
-      values = [email, nombre, apellido, rol, estado, userId];
+      query = 'UPDATE usuarios SET email = ?, nombre = ?, apellido = ?, estado = ?, intentos_login = 0 WHERE id = ?';
+      values = [email, nombre, apellido, estado, userId];
     } else {
       // Si el estado es diferente de 'bloqueado', solo actualizar los datos sin modificar los intentos de inicio de sesión
-      query = 'UPDATE usuarios SET email = ?, nombre = ?, apellido = ?, rol = ?, estado = ? WHERE id = ?';
-      values = [email, nombre, apellido, rol, estado, userId];
+      query = 'UPDATE usuarios SET email = ?, nombre = ?, apellido = ?, estado = ? WHERE id = ?';
+      values = [email, nombre, apellido, estado, userId];
     }
 
     db.query(query, values, (err, results) => {

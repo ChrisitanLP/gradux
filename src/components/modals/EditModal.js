@@ -6,8 +6,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
     nombre: '',
     apellido: '',
     email: '',
-    password: '',
-    rol: '',
+    password: '',   
     estado:'',
   });
 
@@ -20,7 +19,6 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
         apellido: user.apellido || '',
         email: user.email || '',
         password: '',
-        rol: user.rol || '',
         estado: user.estado || ''
       });
     }
@@ -35,7 +33,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
   };
 
   const validateInputs = () => {
-    const { nombre, apellido, email, rol ,estado} = formData;
+    const { nombre, apellido, email, estado} = formData;
     const namePattern = /^[a-zA-Z]+$/;
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -70,7 +68,6 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
       apellido: '',
       email: '',
       password: '',
-      rol: '',
       estado:'',
     });
     setErrorMessage('');
@@ -129,26 +126,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
                 />
               </FormGroup>
             </Col>
-          </Row>
-          <Row>
-            <Col md={12}>
-              <FormGroup>
-                <Label for="rol">Rol</Label>
-                <Input
-                  type="select"
-                  name="rol"
-                  id="rol"
-                  value={formData.rol}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Seleccionar Rol</option>
-                  <option value="administrador">Administrador</option>
-                  <option value="docente">Docente</option>
-                </Input>
-              </FormGroup>
-            </Col>
-          </Row>
+          </Row>      
           <Row>
             <Col md={6}>
               <FormGroup>
