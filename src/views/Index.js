@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Card, CardHeader, Table, Container, Row, Col } from 'reactstrap';
+import { Button, Card, Container, Row, Col, Input } from 'reactstrap';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 import Header from 'components/Headers/Header';
 import { fetchUsers, createUser, updateUser } from 'api/users';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,6 +17,7 @@ const Index = () => {
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [globalFilter, setGlobalFilter] = useState(null);
 
   useEffect(() => {
     fetchAllUsers();
@@ -66,6 +69,42 @@ const Index = () => {
     toggleDeleteModal();
   };
 
+  const actionTemplate = (rowData) => {
+    return (
+      <>
+        <Button color="primary" onClick={() => { setSelectedUser(rowData); toggleEditModal(); }}>
+          <FontAwesomeIcon icon={faEdit} />
+        </Button>
+        <Button color="danger" onClick={() => { setSelectedUser(rowData); toggleDeleteModal(); }}>
+          <FontAwesomeIcon icon={faTrash} />
+        </Button>
+      </>
+    );
+  };
+
+  const header = (
+    <div className="table-header">
+      <Row className="align-items-center">
+        <div className="col">
+          <h3 className="mb-0">Listado de Usuarios</h3>
+        </div>
+        <div className="col text-right">
+          <Button color="primary" onClick={toggleCreateModal}>
+            Agregar Usuario <FontAwesomeIcon icon={faPlus} />
+          </Button>
+        </div>
+        <div className="col">
+          <Input
+            type="search"
+            value={globalFilter}
+            onChange={(e) => setGlobalFilter(e.target.value)}
+            placeholder="Buscar..."
+          />
+        </div>
+      </Row>
+    </div>
+  );
+
   return (
     <>
       <Header />
@@ -73,51 +112,25 @@ const Index = () => {
         <Row className="mt-5">
           <Col className="mb-5 mb-xl-0" xl="12">
             <Card className="shadow">
-              <CardHeader className="border-0">
-                <Row className="align-items-center">
-                  <div className="col">
-                    <h3 className="mb-0">Listado de Usuarios</h3>
-                  </div>
-                  <div className="col text-right">
-                    <Button color="primary" onClick={toggleCreateModal}>
-                      Agregar Usuario <FontAwesomeIcon icon={faPlus} />
-                    </Button>
-                  </div>
-                </Row>
-              </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
-                <thead className="thead-light">
-                  <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Apellido</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Contraseña</th>
-                    <th scope="col">Rol</th>
-                    <th scope="col">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users.map(user => (
-                    <tr key={user.id}>
-                      <td>{user.id}</td>
-                      <td>{user.nombre}</td>
-                      <td>{user.apellido}</td>
-                      <td>{user.email}</td>
-                      <td>{user.password}</td>
-                      <td>{user.rol}</td>
-                      <td>
-                        <Button color="primary" onClick={() => { setSelectedUser(user); toggleEditModal(); }}>
-                          Editar <FontAwesomeIcon icon={faEdit} />
-                        </Button>{' '}
-                        <Button color="danger" onClick={() => { setSelectedUser(user); toggleDeleteModal(); }}>
-                          Eliminar <FontAwesomeIcon icon={faTrash} />
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </Table>
+              
+              <DataTable
+                value={users}
+                paginator
+                rows={5}
+                rowsPerPageOptions={[5, 10, 20]}
+                className="p-datatable-striped"
+                globalFilter={globalFilter}
+                header={header}
+                dataKey="id"
+              >
+                <Column field="id" header="ID" sortable filter filterPlaceholder="Buscar por ID" style={{ maxWidth: '10%' }}/>
+                <Column field="nombre" header="Nombre" sortable filter filterPlaceholder="Buscar por nombre" style={{ maxWidth: '10%' }}/>
+                <Column field="apellido" header="Apellido" sortable filter filterPlaceholder="Buscar por apellido" style={{ maxWidth: '10%' }}/>
+                <Column field="email" header="Email" sortable filter filterPlaceholder="Buscar por email" style={{ maxWidth: '15%' }}/>
+                
+                <Column field="rol" header="Rol" sortable filter filterPlaceholder="Buscar por rol" style={{ maxWidth: '10%' }}/>
+                <Column body={actionTemplate} header="Acciones" />
+              </DataTable>
             </Card>
           </Col>
         </Row>

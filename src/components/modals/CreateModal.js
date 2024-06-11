@@ -22,7 +22,6 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
         password: '',
         confirmPassword: '',
         rol: user.rol || '',
-        estado: user.estado || ''
       });
     }
   }, [user]);
@@ -187,10 +186,10 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
         </Form>
       </ModalBody>
       <ModalFooter>
-        <Button color="secondary" onClick={toggle}>
+        <Button color="warning" onClick={toggle}>
           Cancelar
         </Button>
-        <Button color="primary" onClick={handleSubmit}>
+        <Button color="info" onClick={handleSubmit}>
           Guardar
         </Button>
       </ModalFooter>

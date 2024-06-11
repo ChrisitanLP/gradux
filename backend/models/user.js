@@ -28,16 +28,6 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  estado: {
-    type: DataTypes.ENUM('activo', 'bloqueado'),
-    allowNull: false,
-    defaultValue: 'activo',
-  },
-  intentos_login: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    defaultValue: 0,
-  },
 }, {
   tableName: 'usuarios',
   timestamps: false,
