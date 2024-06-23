@@ -502,7 +502,7 @@ exports.updateInformeById = (req, res) => {
   );
 };
 
-// Función para obtener informes por tutor con actividades relacionadas
+// Función para obtener informes Anexo 5 por tutor con actividades relacionadas
 exports.getInformesByTutor = (req, res) => {
   const tutorId = req.params.tutorId;
 
@@ -532,7 +532,7 @@ exports.getInformesByTutor = (req, res) => {
       LEFT JOIN actividades a ON i.id_Informe = a.id_informe_corr
       LEFT JOIN carreras c ON e.id_carrera = c.id_carrera
     WHERE 
-      i.id_usuario_tutor = ?
+      i.id_usuario_tutor = ? AND i.id_tipo_informe = 1
   `;
 
   db.query(query, [tutorId], (err, results) => {
@@ -576,9 +576,88 @@ exports.getInformesByTutor = (req, res) => {
   });
 };
 
+// Función para obtener informes Anexo 11 por tutor con actividades relacionadas
+exports.getInformes11ByTutor = (req, res) => {
+  const tutorId = req.params.tutorId;
+
+  const queryAnexo11 = `
+    SELECT 
+      i.id_Informe,
+      ti.nombreTipo AS tipo_informe,
+      ti.titulo,
+      e.cedula,
+      CONCAT(e.nombre1, ' ', e.nombre2, ' ', e.apellido1, ' ', e.apellido2) AS nombre_completo_estudiante,
+      e.tema_tesis,
+      e.fecha_asignacion_tutor,
+      e.fecha_aprobacion_tema,
+      e.estado_estudiante,
+      c.nombre_carrera,
+      i.fecha_creacion,
+      i.fecha_aprobacion,
+      i.observaciones,
+      i.porcentaje,
+      e.id_estudiante
+    FROM 
+      informes i
+      LEFT JOIN tipoinformes ti ON i.id_tipo_informe = ti.id_Tipo
+      LEFT JOIN estudiantes e ON i.id_estudiante_Per = e.id_estudiante
+      LEFT JOIN carreras c ON e.id_carrera = c.id_carrera
+    WHERE 
+      i.id_usuario_tutor = ? AND i.id_tipo_informe = 2
+  `;
+
+  const queryActividadesAnexo5 = `
+    SELECT
+      a.id_actividad,
+      a.fecha_Actividad,
+      a.nombreActividad,
+      i.id_estudiante_Per
+    FROM 
+      actividades a
+      LEFT JOIN informes i ON a.id_informe_corr = i.id_Informe
+    WHERE 
+      i.id_tipo_informe = 1
+  `;
+
+  db.query(queryAnexo11, [tutorId], (err, anexo11Results) => {
+    if (err) {
+      console.error('Error al obtener los informes Anexo 11:', err);
+      return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+    }
+
+    if (anexo11Results.length === 0) {
+      return res.status(404).json({ success: false, message: 'No se encontraron informes Anexo 11 para el tutor especificado' });
+    }
+
+    db.query(queryActividadesAnexo5, (err, actividadesResults) => {
+      if (err) {
+        console.error('Error al obtener las actividades:', err);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+      }
+
+      const actividadesPorEstudiante = actividadesResults.reduce((acc, actividad) => {
+        if (!acc[actividad.id_estudiante_Per]) {
+          acc[actividad.id_estudiante_Per] = [];
+        }
+        acc[actividad.id_estudiante_Per].push(actividad);
+        return acc;
+      }, {});
+
+      const informesConActividades = anexo11Results.map(informe => {
+        return {
+          ...informe,
+          actividades: actividadesPorEstudiante[informe.id_estudiante] || []
+        };
+      });
+
+      res.json({ success: true, informes: informesConActividades });
+    });
+  });
+};
 
 
-// Obtener todos los estudiantes a cargo de un tutor específico junto con sus informes y actividades
+
+
 exports.getStudentsAndReportsByTutor = (req, res) => {
   const tutorId = req.params.tutorId;
   
@@ -614,7 +693,7 @@ exports.getStudentsAndReportsByTutor = (req, res) => {
       LEFT JOIN tipoinformes ti ON i.id_tipo_informe = ti.id_Tipo
       LEFT JOIN actividades a ON i.id_Informe = a.id_informe_corr
     WHERE 
-      e.id_tutor = ?`;
+      e.id_tutor = ?;`;
 
   db.query(query, [tutorId], (err, results) => {
     if (err) {
@@ -622,65 +701,80 @@ exports.getStudentsAndReportsByTutor = (req, res) => {
       return res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
 
-    // Reestructurar los datos para incluir los informes y actividades dentro de cada estudiante
+    // Objeto para almacenar estudiantes y sus informes agrupados
     const studentsMap = {};
+    
+    // Procesar cada fila de resultado
     results.forEach(row => {
-      if (!studentsMap[row.id_estudiante]) {
-        studentsMap[row.id_estudiante] = {
-          id_estudiante: row.id_estudiante,
-          nombre1: row.nombre1,
-          nombre2: row.nombre2,
-          apellido1: row.apellido1,
-          apellido2: row.apellido2,
-          cedula: row.cedula,
-          nombre_carrera: row.nombre_carrera,
-          nombre_tutor: row.nombre_tutor,
-          fecha_asignacion_tutor: row.fecha_asignacion_tutor,
-          tema_tesis: row.tema_tesis,
-          fecha_aprobacion_tema: row.fecha_aprobacion_tema,
-          estado_estudiante: row.estado_estudiante,
+      const { id_estudiante, id_Informe, nombre1, nombre2, apellido1, apellido2, cedula, 
+              nombre_carrera, nombre_tutor, fecha_asignacion_tutor, tema_tesis, 
+              fecha_aprobacion_tema, estado_estudiante, tipo_informe, titulo, fecha_creacion, 
+              observaciones, porcentaje, fecha_aprobacion, id_actividad, fecha_Actividad, nombreActividad } = row;
+
+      // Si el estudiante aún no está en el mapa, agregarlo con sus datos básicos
+      if (!studentsMap[id_estudiante]) {
+        studentsMap[id_estudiante] = {
+          id_estudiante,
+          nombre1,
+          nombre2,
+          apellido1,
+          apellido2,
+          cedula,
+          nombre_carrera,
+          nombre_tutor,
+          fecha_asignacion_tutor,
+          tema_tesis,
+          fecha_aprobacion_tema,
+          estado_estudiante,
           informes: []
         };
       }
 
-      if (row.id_Informe) {
-        const informe = studentsMap[row.id_estudiante].informes.find(inf => inf.id_Informe === row.id_Informe);
-        if (informe) {
-          informe.actividades.push({
-            id_actividad: row.id_actividad,
-            fecha_Actividad: row.fecha_Actividad,
-            nombreActividad: row.nombreActividad
+      // Solo agregar informes del tipo "ANEXO 5"
+      if (tipo_informe === 'ANEXO 5') {
+        // Buscar si el informe ya existe para este estudiante
+        const existingInforme = studentsMap[id_estudiante].informes.find(informe => informe.id_Informe === id_Informe);
+
+        if (existingInforme) {
+          // Si el informe ya existe, agregar la actividad a su lista de actividades
+          existingInforme.actividades.push({
+            id_actividad,
+            fecha_Actividad,
+            nombreActividad
           });
         } else {
-          studentsMap[row.id_estudiante].informes.push({
-            id_Informe: row.id_Informe,
-            tipo_informe: row.tipo_informe,
-            titulo: row.titulo,
-            nombre_carrera: row.nombre_carrera,
-            tema_tesis: row.tema_tesis,
-            fecha_aprobacion_tema: row.fecha_aprobacion_tema,
-            fecha_creacion: row.fecha_creacion,
-            observaciones: row.observaciones,
-            nombre1: row.nombre1,
-            nombre2: row.nombre2,
-            apellido1: row.apellido1,
-            apellido2: row.apellido2,
-            porcentaje: row.porcentaje,
-            fecha_aprobacion: row.fecha_aprobacion,
-            actividades: row.id_actividad ? [{
-              id_actividad: row.id_actividad,
-              fecha_Actividad: row.fecha_Actividad,
-              nombreActividad: row.nombreActividad
+          // Si el informe no existe, agregar un nuevo informe con sus actividades
+          studentsMap[id_estudiante].informes.push({
+            id_Informe,
+            tipo_informe,
+            titulo,
+            nombre_carrera,
+            tema_tesis,
+            fecha_aprobacion_tema,
+            fecha_creacion,
+            observaciones,
+            nombre1,
+            nombre2,
+            apellido1,
+            apellido2,
+            porcentaje,
+            fecha_aprobacion,
+            actividades: id_actividad ? [{
+              id_actividad,
+              fecha_Actividad,
+              nombreActividad
             }] : []
           });
         }
       }
     });
 
+    // Convertir el mapa de estudiantes de nuevo a un arreglo
     const students = Object.values(studentsMap);
     res.json({ success: true, students });
   });
 };
+
 
 
 // Función para obtener todos los tipos de informe
@@ -694,10 +788,10 @@ exports.getAllTypesReports = (req, res) => {
   });
 };
 
-// Función para obtener estudiantes por tutor por su ID
+// Función para obtener estudiantes por tutor por su ID con estado "En Progreso"
 exports.getStudentsByUsersId = (req, res) => {
   const tutorId = req.params.tutorId;
-  db.query('SELECT * FROM estudiantes WHERE id_tutor = ?', [tutorId], (err, results) => {
+  db.query('SELECT * FROM estudiantes WHERE id_tutor = ? AND estado_estudiante = "En progreso"', [tutorId], (err, results) => {
     if (err) {
       console.error('Error al obtener los estudiantes por tutor:', err);
       return res.status(500).json({ success: false, message: 'Error interno del servidor' });

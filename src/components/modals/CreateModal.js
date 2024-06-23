@@ -122,7 +122,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
             </Col>
           </Row>
           <Row>
-            <Col md={6}>
+            <Col md={12}>
               <FormGroup>
                 <Label for="email">Email</Label>
                 <Input
@@ -135,7 +135,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
                 />
               </FormGroup>
             </Col>
-            <Col md={6}>
+            <Col md={12}>
               <FormGroup>
                 <Label for="rol">Rol</Label>
                 <Input

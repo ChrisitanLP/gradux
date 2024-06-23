@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, FormGroup, Label, Input, Row, Col, Alert } from 'reactstrap';
 import { fetchTiposInformes, fetchEstudiantes } from 'api/common';
 
-const ICreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
+const A11CreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
   const [reportData, setReportData] = useState({
-    id_tipo_informe: '1',
+    id_tipo_informe: '2',
     id_estudiante_Per: '',
     observaciones: '',
     id_usuario_tutor: tutorId,
@@ -63,7 +63,7 @@ const ICreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
 
   return (
     <Modal isOpen={isOpen} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Crear Anexo 5</ModalHeader>
+        <ModalHeader toggle={toggle}>Crear Anexo11</ModalHeader>
         <ModalBody>
             {errorMessage && <Alert color="danger">{errorMessage}</Alert>}
             <FormGroup>
@@ -81,16 +81,16 @@ const ICreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
                 </Input>
             </FormGroup>
             <Row>
-                <Col md={6}>        
-                <FormGroup>
-                    <Label for="fecha_aprobacion">Fecha de Aprobación</Label>
-                    <Input 
-                        type="date" 
-                        name="fecha_aprobacion" 
-                        value={reportData.fecha_aprobacion} 
-                        onChange={handleInputChange} 
-                    />
-                </FormGroup>
+                <Col md={6}>
+                  <FormGroup>
+                      <Label for="fecha_aprobacion">Fecha de Aprobación</Label>
+                      <Input 
+                          type="date" 
+                          name="fecha_aprobacion" 
+                          value={reportData.fecha_aprobacion} 
+                          onChange={handleInputChange} 
+                      />
+                  </FormGroup>
                 </Col>
                 <Col md={6}>
                     <FormGroup>
@@ -123,4 +123,4 @@ const ICreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
   );
 };
 
-export default ICreateModal;
+export default A11CreateModal;

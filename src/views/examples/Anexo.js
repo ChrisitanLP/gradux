@@ -3,7 +3,6 @@ import { Button, Card, Container, Row, Col, Input } from 'reactstrap';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import Header from 'components/Headers/TeacherHeader';
-import A11CreateModal from 'components/modals/A11CreateModal';
 import ICreateModal from 'components/modals/ICreateModal';
 import IDeleteModal from 'components/modals/IDeleteModal';
 import IEditModal from 'components/modals/IEditModal';
@@ -20,18 +19,12 @@ import { useAuth } from 'context/AuthContext';
 
 const Tables = () => {
   const [reports, setReports] = useState([]);
-  const [anexo11Reports, setAnexo11Reports] = useState([]);
   const [expandedRows, setExpandedRows] = useState([]);
   const [globalFilter, setGlobalFilter] = useState(null);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedReport, setSelectedReport] = useState(null);
-
-  const [createA11ModalOpen, setCreateA11ModalOpen] = useState(false);
-  const [selectedA11Report, setSelectedA11Report] = useState(null);
-
-
 
   const [createActivityModalOpen, setCreateActivityModalOpen] = useState(false);
   const [editActivityModalOpen, setEditActivityModalOpen] = useState(false);
@@ -44,7 +37,6 @@ const Tables = () => {
   useEffect(() => {
     if (auth.userId) {
       fetchReportsByTutor(auth.userId);
-      fetchReports11ByTutor(auth.userId);
     }
   }, [auth.userId]);
 
@@ -53,23 +45,13 @@ const Tables = () => {
       const response = await axios.get(`http://localhost:5000/api/reportsbytutor/${tutorId}`);
       setReports(response.data.informes);
     } catch (error) {
-      console.error('Error al obtener Anexo 5:', error);
-    }
-  };
-
-  const fetchReports11ByTutor = async (tutorId) => {
-    try {
-      const response = await axios.get(`http://localhost:5000/api/reports11bytutor/${tutorId}`);
-      setAnexo11Reports(response.data.informes);
-    } catch (error) {
-      console.error('Error al obtener Anexo 11:', error);
+      console.error('Error al obtener informes:', error);
     }
   };
 
   const toggleCreateModal = () => {
     setCreateModalOpen(!createModalOpen);
   };
-
 
   const toggleEditModal = () => {
     setEditModalOpen(!editModalOpen);
@@ -98,21 +80,7 @@ const Tables = () => {
       fetchReportsByTutor(auth.userId);
       toggleCreateModal();
     } catch (error) {
-      console.error('Error al crear Anexo 5:', error);
-    }
-  };
-
-  const toggleCreateA11Modal = () => {
-    setCreateA11ModalOpen(!createA11ModalOpen);
-  };
-  
-  const handleCreateA11Report = async (reportData) => {
-    try {
-      await createReport(reportData); // Reutilizando la función de crear informe
-      fetchReports11ByTutor(auth.userId); // Refrescar los informes
-      toggleCreateA11Modal(); // Cerrar el modal
-    } catch (error) {
-      console.error('Error al crear Anexo 11:', error);
+      console.error('Error al crear informes:', error);
     }
   };
 
@@ -180,17 +148,6 @@ const Tables = () => {
     );
   };
 
-  const actionBodyAnexo11 = (rowData) => {
-    return (
-      <React.Fragment>
-        <Button color="danger" onClick={() => { setSelectedReport(rowData); toggleDeleteModal(); }}>
-          <FontAwesomeIcon icon={faTrash} />
-        </Button>
-        <PDFGenerator report={rowData} />
-      </React.Fragment>
-    );
-  };
-
   const actionBodyAditional = (actividad) => {
     return (
       <React.Fragment>
@@ -234,31 +191,6 @@ const Tables = () => {
     );
   };
 
-  const renderExtraAnexo11 = (informes) => {
-    return (
-      <div className="p-3">
-        <table className="table table-bordered table-hover">
-          <thead className="table-header-custom">
-            <tr>
-              <th>ID</th>
-              <th>Fecha</th>
-              <th>Actividad</th>
-            </tr>
-          </thead>
-          <tbody>
-            {informes.actividades.map((actividad) => (
-              <tr key={actividad.id_actividad}>
-                <td style={{ maxWidth: '5%' }}>{actividad.id_actividad}</td>
-                <td style={{ maxWidth: '8%' }}>{actividad.fecha_Actividad}</td>
-                <td style={{ maxWidth: '30%' }}>{actividad.nombreActividad}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
-
   const header = (
     <div className="table-header">
       <Row className="align-items-center">
@@ -268,29 +200,6 @@ const Tables = () => {
         <div className="col text-right">
           <Button color="primary" onClick={toggleCreateModal}>
             Agregar Anexo 5 <FontAwesomeIcon icon={faPlus} />
-          </Button>
-        </div>
-        <div className="col">
-          <Input
-            type="search"
-            value={globalFilter}
-            onChange={(e) => setGlobalFilter(e.target.value)}
-            placeholder="Buscar..."
-          />
-        </div>
-      </Row>
-    </div>
-  );
-
-  const headerAnexo11 = (
-    <div className="table-header">
-      <Row className="align-items-center">
-        <div className="col">
-          <h3 className="mb-0">Anexo 11</h3>
-        </div>
-        <div className="col text-right">
-          <Button color="primary" onClick={toggleCreateA11Modal}>
-            Agregar Anexo 11 <FontAwesomeIcon icon={faPlus} />
           </Button>
         </div>
         <div className="col">
@@ -338,53 +247,11 @@ const Tables = () => {
           </Col>
         </Row>
       </Container>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <Container className="mt--7" fluid>
-        <Row>
-          <Col className="mb-5 mb-xl-0" xl="12">
-            <Card className="shadow">
-              <DataTable
-                value={anexo11Reports}
-                paginator
-                rows={5}
-                rowsPerPageOptions={[5, 10, 20]}
-                className="p-datatable-striped"
-                globalFilter={globalFilter}
-                header={headerAnexo11}
-                rowExpansionTemplate={renderExtraAnexo11}
-                expandedRows={expandedRows}
-                onRowToggle={(e) => setExpandedRows(e.data)}
-                dataKey="id_Informe"
-              >
-                <Column expander style={{ width: '3em' }} />
-                <Column field="id_Informe" header="ID" sortable filter filterPlaceholder="Buscar por ID" style={{ maxWidth: '10%' }} />
-                <Column field="tipo_informe" header="Tipo" sortable filter filterPlaceholder="Buscar por tipo" style={{ maxWidth: '10%' }} />
-                <Column field="cedula" header="Cédula" sortable filter filterPlaceholder="Buscar por cédula" style={{ maxWidth: '15%' }} />
-                <Column field="nombre_completo_estudiante" header="Nombre Completo" sortable filter filterPlaceholder="Buscar por nombre" style={{ maxWidth: '10%' }} />
-                <Column field="tema_tesis" header="Tema de Tesis" sortable filter filterPlaceholder="Buscar por tema" style={{ maxWidth: '10%' }} />
-                <Column field="porcentaje" header="Porcentaje" sortable filter filterPlaceholder="Buscar por porcentaje" style={{ maxWidth: '10%' }} />
-                <Column body={actionBodyAnexo11} header="Acciones" style={{ maxWidth: '15%' }}/>
-              </DataTable>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
 
       <ICreateModal 
         isOpen={createModalOpen} 
         toggle={toggleCreateModal} 
         onSave={handleCreateReport} 
-        tutorId={auth.userId} 
-      />
-
-      <A11CreateModal 
-        isOpen={createA11ModalOpen} 
-        toggle={toggleCreateA11Modal} 
-        onSave={handleCreateA11Report} 
         tutorId={auth.userId} 
       />
 

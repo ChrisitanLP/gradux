@@ -19,6 +19,7 @@ import Index from "views/Dashboard.js";
 import Profile from "views/examples/Profile.js";
 import Teachers from "views/examples/Examples.js";
 import Reports from "views/examples/Reports.js";
+import Anexo from "views/examples/Anexo.js";
 
 var routes = [
   {
@@ -36,12 +37,13 @@ var routes = [
     layout: "/teacher",
   },
   {
-    path: "/reports",
+    path: "/informes",
     name: "Informes",
     icon: "ni ni-single-copy-04 text-blue",
     component: <Reports />,
     layout: "/teacher",
   },
+  
   {
     path: "/user-profile",
     name: "Perfil de Usuario",

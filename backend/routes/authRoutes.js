@@ -61,6 +61,7 @@ router.delete('/informes/:id', authController.deleteInformeById);
 
 // Obtener informes por tutor
 router.get('/reportsbytutor/:tutorId', authController.getInformesByTutor);
+router.get('/reports11bytutor/:tutorId', authController.getInformes11ByTutor);
 router.get('/studentsandreportsbytutor/:tutorId', authController.getStudentsAndReportsByTutor);
 
 // Rutas para los informes

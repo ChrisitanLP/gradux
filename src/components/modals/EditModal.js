@@ -128,7 +128,7 @@ const EditModal = ({ isOpen, toggle, onSave, user }) => {
             </Col>
           </Row>      
           <Row>
-            <Col md={6}>
+            <Col md={12}>
               <FormGroup>
                 <Label for="estado">Estado</Label>
                 <Input
