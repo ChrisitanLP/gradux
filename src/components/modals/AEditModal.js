@@ -27,6 +27,14 @@ const AEditModal = ({ isOpen, toggle, onSave, activity }) => {
     return `${year}-${month}-${day}`;
   };
 
+  const getCurrentDate = () => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    return `${year}-${month}-${day}`;
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setActivityData({ ...activityData, [name]: value });
@@ -34,9 +42,14 @@ const AEditModal = ({ isOpen, toggle, onSave, activity }) => {
 
   const validateInputs = () => {
     const { nombreActividad, fecha_Actividad } = activityData;
+    const currentDate = getCurrentDate();
 
     if (!nombreActividad || !fecha_Actividad) {
       return "Por favor, complete todos los campos.";
+    }
+
+    if (fecha_Actividad < currentDate) {
+      return "La fecha de la actividad no puede ser en el pasado.";
     }
 
     return '';
@@ -64,6 +77,7 @@ const AEditModal = ({ isOpen, toggle, onSave, activity }) => {
             name="fecha_Actividad"
             value={activityData.fecha_Actividad}
             onChange={handleInputChange}
+            min={getCurrentDate()}
           />
         </FormGroup>
         <FormGroup>

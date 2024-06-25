@@ -24,11 +24,24 @@ const ACreateModal = ({ isOpen, toggle, onSave, reportId }) => {
     setActivityData({ ...activityData, [name]: value });
   };
 
+  const getCurrentDate = () => {
+    const today = new Date();
+    const day = String(today.getDate()).padStart(2, '0');
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const year = today.getFullYear();
+    return `${year}-${month}-${day}`;
+  };
+
   const validateInputs = () => {
     const { id_informe_corr, nombreActividad, fecha_Actividad } = activityData;
+    const currentDate = getCurrentDate();
 
     if (!id_informe_corr || !nombreActividad || !fecha_Actividad) {
       return "Por favor, complete todos los campos.";
+    }
+
+    if (fecha_Actividad < currentDate) {
+      return "La fecha de la actividad no puede ser en una fecha pasada.";
     }
 
     return '';
@@ -56,6 +69,7 @@ const ACreateModal = ({ isOpen, toggle, onSave, reportId }) => {
             name="fecha_Actividad"
             value={activityData.fecha_Actividad}
             onChange={handleInputChange}
+            min={getCurrentDate()}
           />
         </FormGroup>
         <FormGroup>

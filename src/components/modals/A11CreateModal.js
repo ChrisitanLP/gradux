@@ -61,6 +61,14 @@ const A11CreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
     onSave(reportData);
   };
 
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   return (
     <Modal isOpen={isOpen} toggle={toggle}>
         <ModalHeader toggle={toggle}>Crear Anexo11</ModalHeader>
@@ -89,6 +97,7 @@ const A11CreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
                           name="fecha_aprobacion" 
                           value={reportData.fecha_aprobacion} 
                           onChange={handleInputChange} 
+                          min={getCurrentDate()} // Set the minimum date to today
                       />
                   </FormGroup>
                 </Col>
