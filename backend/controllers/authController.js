@@ -426,15 +426,13 @@ exports.getStudentsByTutor = (req, res) => {
 // Función para crear un nuevo informe
 exports.createInforme = (req, res) => {
   const { id_tipo_informe, id_estudiante_Per, observaciones, id_usuario_tutor, porcentaje, fecha_aprobacion } = req.body;
-
     // Verificar el máximo de informes del tipo 1 por estudiante
-    const maxInformeTipo1 = 5; // Máximo de informes del tipo 1 por estudiante
+    const maxInformeTipo1 = id_tipo_informe == 1 ? 5 : Infinity; // Máximo de informes del tipo 1 por estudiante
     db.query('SELECT COUNT(*) AS numInformes FROM informes WHERE id_estudiante_Per = ? AND id_tipo_informe = 1', [id_estudiante_Per], (err, results) => {
       if (err) {
         console.error('Error al contar los informes:', err);
         return res.status(500).json({ success: false, message: 'Error interno del servidor' });
       }
-      
       const numInformesTipo1 = results[0].numInformes || 0;
       
       if (numInformesTipo1 >= maxInformeTipo1) {
@@ -485,17 +483,28 @@ exports.getAllInformes = (req, res) => {
 // Función para eliminar un informe por su ID
 exports.deleteInformeById = (req, res) => {
   const informeId = req.params.id;
-  db.query('DELETE FROM informes WHERE id_Informe = ?', [informeId], (err, results) => {
+
+  // Primero eliminamos los registros dependientes en la tabla 'actividades'
+  db.query('DELETE FROM actividades WHERE id_informe_corr = ?', [informeId], (err, results) => {
     if (err) {
-      console.error('Error al eliminar el informe:', err);
+      console.error('Error al eliminar actividades relacionadas:', err);
       return res.status(500).json({ success: false, message: 'Error interno del servidor' });
     }
-    if (results.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: 'Informe no encontrado' });
-    }
-    res.json({ success: true, message: 'Informe eliminado exitosamente' });
+
+    // Después eliminamos el informe
+    db.query('DELETE FROM informes WHERE id_Informe = ?', [informeId], (err, results) => {
+      if (err) {
+        console.error('Error al eliminar el informe:', err);
+        return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+      }
+      if (results.affectedRows === 0) {
+        return res.status(404).json({ success: false, message: 'Informe no encontrado' });
+      }
+      res.json({ success: true, message: 'Informe eliminado exitosamente' });
+    });
   });
 };
+
 
 // Función para actualizar un informe por su ID
 exports.updateInformeById = (req, res) => {

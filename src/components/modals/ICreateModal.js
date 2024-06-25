@@ -39,7 +39,6 @@ const ICreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
 
   const validateInputs = async () => {
     const { id_tipo_informe, id_estudiante_Per, porcentaje, fecha_aprobacion } = reportData;
-
     if (!id_tipo_informe || !id_estudiante_Per || !porcentaje || !fecha_aprobacion) {
       return "Por favor, complete todos los campos.";
     }
@@ -48,17 +47,11 @@ const ICreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
       return "Por favor, ingrese un porcentaje válido (0-100).";
     }
 
-    try {
-      // Fetch reports by student specifically for report type 1
-      const existingReports = await fetchReportsByStudent(id_estudiante_Per);
-      if (existingReports.length >= 5) {
-        return `El estudiante ya tiene el máximo de 5 informes del Anexo 5.`;
-      }
-    } catch (error) {
-      console.error('Error al validar los informes:', error);
-      return 'Error al validar los informes. Inténtelo de nuevo más tarde.';
+    const existingReports = await fetchReportsByStudent(reportData);
+    if (existingReports.includes("5")) {
+      return existingReports;
     }
-    return '';
+    return "";
   };
 
   const handleSave = async () => {
