@@ -608,7 +608,7 @@ exports.getInformes11ByTutor = (req, res) => {
       e.fecha_aprobacion_tema,
       e.estado_estudiante,
       c.nombre_carrera,
-      i.fecha_creacion,
+      LAST_DAY(CURRENT_DATE()) AS fecha_creacion,
       i.fecha_aprobacion,
       i.observaciones,
       i.porcentaje,
