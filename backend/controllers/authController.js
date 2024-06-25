@@ -427,18 +427,34 @@ exports.getStudentsByTutor = (req, res) => {
 exports.createInforme = (req, res) => {
   const { id_tipo_informe, id_estudiante_Per, observaciones, id_usuario_tutor, porcentaje, fecha_aprobacion } = req.body;
 
-  db.query(
-    'INSERT INTO informes (id_tipo_informe, id_estudiante_Per, observaciones, id_usuario_tutor, porcentaje, fecha_aprobacion) VALUES (?, ?, ?, ?, ?, ?)',
-    [id_tipo_informe, id_estudiante_Per, observaciones, id_usuario_tutor, porcentaje, fecha_aprobacion],
-    (err, results) => {
+    // Verificar el máximo de informes del tipo 1 por estudiante
+    const maxInformeTipo1 = 5; // Máximo de informes del tipo 1 por estudiante
+    db.query('SELECT COUNT(*) AS numInformes FROM informes WHERE id_estudiante_Per = ? AND id_tipo_informe = 1', [id_estudiante_Per], (err, results) => {
       if (err) {
-        console.error('Error al crear el informe:', err);
+        console.error('Error al contar los informes:', err);
         return res.status(500).json({ success: false, message: 'Error interno del servidor' });
       }
-      res.status(201).json({ success: true, message: 'Informe creado exitosamente' });
-    }
-  );
-};
+      
+      const numInformesTipo1 = results[0].numInformes || 0;
+      
+      if (numInformesTipo1 >= maxInformeTipo1) {
+        return res.status(400).json({ success: false, message: `El estudiante ya tiene el máximo de ${maxInformeTipo1} informes del Anexo 5.` });
+      }
+  
+      // Si no ha alcanzado el máximo, proceder a insertar el informe
+      db.query(
+        'INSERT INTO informes (id_tipo_informe, id_estudiante_Per, observaciones, id_usuario_tutor, porcentaje, fecha_aprobacion) VALUES (?, ?, ?, ?, ?, ?)',
+        [id_tipo_informe, id_estudiante_Per, observaciones, id_usuario_tutor, porcentaje, fecha_aprobacion],
+        (err, results) => {
+          if (err) {
+            console.error('Error al crear el informe:', err);
+            return res.status(500).json({ success: false, message: 'Error interno del servidor' });
+          }
+          res.status(201).json({ success: true, message: 'Informe creado exitosamente' });
+        }
+      );
+    });
+  };
 
 // Función para obtener un informe por su ID
 exports.getInformeById = (req, res) => {
@@ -518,7 +534,7 @@ exports.getInformesByTutor = (req, res) => {
       e.fecha_aprobacion_tema,
       e.estado_estudiante,
       c.nombre_carrera,
-      i.fecha_creacion,
+      LAST_DAY(CURRENT_DATE()) AS fecha_creacion,
       i.fecha_aprobacion,
       i.observaciones,
       i.porcentaje,

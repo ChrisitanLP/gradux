@@ -50,4 +50,4 @@ export const getReportById = async (reportId) => {
     console.error('Error al obtener informe por ID:', error);
     throw error;
   }
-};
+}; 

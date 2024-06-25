@@ -43,3 +43,15 @@ export const fetchEstudiantes = async (tutorId) => {
   }
 };
 
+export const fetchReportsByStudent = async (studentId) => {
+  try {
+    const response = await axios.get(`${API_URL}/reports?studentId=${studentId}&reportTypeId=1`);
+    return response.data || [];
+  } catch (error) {
+    console.error('Error al obtener informes:', error);
+    throw new Error('Error al obtener informes');
+  }
+};
+
+
+

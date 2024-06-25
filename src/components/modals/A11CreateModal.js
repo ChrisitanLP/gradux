@@ -8,7 +8,7 @@ const A11CreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
     id_estudiante_Per: '',
     observaciones: '',
     id_usuario_tutor: tutorId,
-    porcentaje: '',
+    porcentaje: '100',
     fecha_aprobacion: ''
   });
 

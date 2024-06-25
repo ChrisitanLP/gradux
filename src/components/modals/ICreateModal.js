@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button, FormGroup, Label, Input, Row, Col, Alert } from 'reactstrap';
-import { fetchTiposInformes, fetchEstudiantes } from 'api/common';
+import { fetchTiposInformes, fetchEstudiantes, fetchReportsByStudent } from 'api/common';
 
 const ICreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
   const [reportData, setReportData] = useState({
@@ -21,14 +21,14 @@ const ICreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
       try {
         const tiposInformeData = await fetchTiposInformes();
         setTiposInforme(tiposInformeData);
-        
+
         const estudiantesData = await fetchEstudiantes(tutorId);
         setEstudiantes(estudiantesData);
       } catch (error) {
         console.error('Error al obtener datos:', error);
       }
     }
-    
+
     fetchData();
   }, [tutorId]);
 
@@ -37,7 +37,7 @@ const ICreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
     setReportData({ ...reportData, [name]: value });
   };
 
-  const validateInputs = () => {
+  const validateInputs = async () => {
     const { id_tipo_informe, id_estudiante_Per, porcentaje, fecha_aprobacion } = reportData;
 
     if (!id_tipo_informe || !id_estudiante_Per || !porcentaje || !fecha_aprobacion) {
@@ -48,11 +48,21 @@ const ICreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
       return "Por favor, ingrese un porcentaje válido (0-100).";
     }
 
+    try {
+      // Fetch reports by student specifically for report type 1
+      const existingReports = await fetchReportsByStudent(id_estudiante_Per);
+      if (existingReports.length >= 5) {
+        return `El estudiante ya tiene el máximo de 5 informes del Anexo 5.`;
+      }
+    } catch (error) {
+      console.error('Error al validar los informes:', error);
+      return 'Error al validar los informes. Inténtelo de nuevo más tarde.';
+    }
     return '';
   };
 
-  const handleSave = () => {
-    const error = validateInputs();
+  const handleSave = async () => {
+    const error = await validateInputs();
     if (error) {
       setErrorMessage(error);
       return;
@@ -61,64 +71,79 @@ const ICreateModal = ({ isOpen, toggle, onSave, tutorId }) => {
     onSave(reportData);
   };
 
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
   return (
     <Modal isOpen={isOpen} toggle={toggle}>
-        <ModalHeader toggle={toggle}>Crear Anexo 5</ModalHeader>
-        <ModalBody>
-            {errorMessage && <Alert color="danger">{errorMessage}</Alert>}
+      <ModalHeader toggle={toggle}>Crear Anexo 5</ModalHeader>
+      <ModalBody>
+        {errorMessage && <Alert color="danger">{errorMessage}</Alert>}
+        <FormGroup>
+          <Label for="id_estudiante_Per">Estudiante</Label>
+          <Input
+            type="select"
+            name="id_estudiante_Per"
+            value={reportData.id_estudiante_Per}
+            onChange={handleInputChange}
+          >
+            <option value="">Seleccionar estudiante</option>
+            {estudiantes.map((estudiante) => (
+              <option key={estudiante.id_estudiante} value={estudiante.id_estudiante}>
+                {`${estudiante.nombre1} ${estudiante.nombre2} ${estudiante.apellido1} ${estudiante.apellido2}`}
+              </option>
+            ))}
+          </Input>
+        </FormGroup>
+        <Row>
+          <Col md={6}>
             <FormGroup>
-                <Label for="id_estudiante_Per">Estudiante</Label>
-                <Input 
-                    type="select" 
-                    name="id_estudiante_Per" 
-                    value={reportData.id_estudiante_Per} 
-                    onChange={handleInputChange}
-                >
-                <option value="">Seleccionar estudiante</option>
-                {estudiantes.map((estudiante) => (
-                <option key={estudiante.id_estudiante} value={estudiante.id_estudiante}> {`${estudiante.nombre1} ${estudiante.nombre2} ${estudiante.apellido1} ${estudiante.apellido2}`}</option>
-                ))}
-                </Input>
+              <Label for="fecha_aprobacion">Fecha de Aprobación</Label>
+              <Input
+                type="date"
+                name="fecha_aprobacion"
+                value={reportData.fecha_aprobacion}
+                onChange={handleInputChange}
+                min={getCurrentDate()} // Set the minimum date to today
+              />
             </FormGroup>
-            <Row>
-                <Col md={6}>        
-                <FormGroup>
-                    <Label for="fecha_aprobacion">Fecha de Aprobación</Label>
-                    <Input 
-                        type="date" 
-                        name="fecha_aprobacion" 
-                        value={reportData.fecha_aprobacion} 
-                        onChange={handleInputChange} 
-                    />
-                </FormGroup>
-                </Col>
-                <Col md={6}>
-                    <FormGroup>
-                        <Label for="porcentaje">Porcentaje</Label>
-                        <Input 
-                            type="number" 
-                            name="porcentaje" 
-                            value={reportData.porcentaje} 
-                            onChange={handleInputChange} 
-                            required
-                        />
-                    </FormGroup>
-                </Col>
-            </Row>
+          </Col>
+          <Col md={6}>
             <FormGroup>
-                <Label for="observaciones">Observaciones</Label>
-                <Input 
-                    type="textarea" 
-                    name="observaciones" 
-                    value={reportData.observaciones} 
-                    onChange={handleInputChange} 
-                />
+              <Label for="porcentaje">Porcentaje</Label>
+              <Input
+                type="number"
+                name="porcentaje"
+                value={reportData.porcentaje}
+                onChange={handleInputChange}
+                required
+              />
             </FormGroup>
-        </ModalBody>
-        <ModalFooter>
-            <Button color="warning" onClick={toggle}>Cancelar</Button>
-            <Button color="info" onClick={handleSave}>Guardar</Button>
-        </ModalFooter>
+          </Col>
+        </Row>
+        <FormGroup>
+          <Label for="observaciones">Observaciones</Label>
+          <Input
+            type="textarea"
+            name="observaciones"
+            value={reportData.observaciones}
+            onChange={handleInputChange}
+          />
+        </FormGroup>
+      </ModalBody>
+      <ModalFooter>
+        <Button color="warning" onClick={toggle}>
+          Cancelar
+        </Button>
+        <Button color="info" onClick={handleSave}>
+          Guardar
+        </Button>
+      </ModalFooter>
     </Modal>
   );
 };

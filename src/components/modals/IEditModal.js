@@ -20,12 +20,20 @@ const IEditModal = ({ isOpen, toggle, onSave, report }) => {
     }
   }, [report]);
 
-  const formatDate = (date) => {
-    if (!date) return '';
-    const d = new Date(date);
-    const year = d.getFullYear();
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
+  const getCurrentDate = () => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   };
 
@@ -71,7 +79,8 @@ const IEditModal = ({ isOpen, toggle, onSave, report }) => {
                 type="date" 
                 name="fecha_aprobacion" 
                 value={reportData.fecha_aprobacion} 
-                onChange={handleInputChange} 
+                onChange={handleInputChange}
+                min={getCurrentDate()} // Usar la fecha actual como mínimo
               />
             </FormGroup>
           </Col>
@@ -107,3 +116,4 @@ const IEditModal = ({ isOpen, toggle, onSave, report }) => {
 };
 
 export default IEditModal;
+
