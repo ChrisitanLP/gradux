@@ -1,241 +1,507 @@
-# [Argon Dashboard React](https://demos.creative-tim.com/argon-dashboard-react?ref=adr-github-readme) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/home?status=Argon%20Dashboard%20is%20a%20Free%20Bootstrap%204,%20React%20and%20Reactstrap%20Dashboard%20made%20using%20create-react-app%20%E2%9D%A4%EF%B8%8F%0Ahttps%3A//demos.creative-tim.com/argon-dashboard-react%20%23react%20%23reactstrap%20%23createreactapp%20%23argon%20%23argondesign%20%23reactdashboard%20%23argonreact%20%23reactdesign%20%23bootstrap%20%23material%20%23design%20%23uikit%20%23freebie%20%20via%20%40CreativeTim)
+# ⚡ Sistema de Gestión Académica - Argon Dashboard React
 
-![version](https://img.shields.io/badge/version-1.2.4-blue.svg) ![license](https://img.shields.io/badge/license-MIT-blue.svg) [![GitHub issues open](https://img.shields.io/github/issues/creativetimofficial/argon-dashboard-react.svg?maxAge=2592000)](https://github.com/creativetimofficial/argon-dashboard-react/issues?q=is%3Aopen+is%3Aissue) [![GitHub issues closed](https://img.shields.io/github/issues-closed-raw/creativetimofficial/argon-dashboard-react.svg?maxAge=2592000)](https://github.com/creativetimofficial/argon-dashboard-react/issues?q=is%3Aissue+is%3Aclosed) [![Join the chat at https://gitter.im/NIT-dgp/General](https://badges.gitter.im/NIT-dgp/General.svg)](https://gitter.im/creative-tim-general/Lobby) [![Chat](https://img.shields.io/badge/chat-on%20discord-7289da.svg)](https://discord.gg/E4aHAQy)
+Sistema integral para la gestión académica de instituciones educativas, basado en una plantilla moderna de panel administrativo construida con React y respaldado por un backend en Node.js/Express. El sistema permite el manejo de usuarios, estudiantes, informes, actividades y control de acceso con roles, todo sobre una base de datos MySQL.
 
-![Product Gif](https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-react/argon-dashboard-react.gif)
+---
 
-Start your development with a Dashboard for [Bootstrap 4](https://getbootstrap.com/?ref=creativetim), [React](https://reactjs.org/?ref=creativetim) and [Reactstrap](https://reactstrap.github.io/?ref=creativetim), made with [create-react-app](https://facebook.github.io/create-react-app/?ref=creativetim). It is open source, free and it features many components that can help you create amazing websites.
+## 📋 Tabla de Contenidos
+- [⚡ Sistema de Gestión Académica - Argon Dashboard React](#-sistema-de-gestión-académica---argon-dashboard-react)
+  - [📋 Tabla de Contenidos](#-tabla-de-contenidos)
+  - [✨ Características Principales](#-características-principales)
+  - [🏗️ Arquitectura del Sistema](#️-arquitectura-del-sistema)
+  - [📁 Estructura del Proyecto](#-estructura-del-proyecto)
+    - [📂 Descripción detallada de módulos](#-descripción-detallada-de-módulos)
+  - [🛠️ Requisitos Previos](#️-requisitos-previos)
+  - [📦 Instalación](#-instalación)
+    - [1. Clonar el repositorio](#1-clonar-el-repositorio)
+    - [2. Instalar dependencias](#2-instalar-dependencias)
+    - [3. Crear estructura de directorios adicional](#3-crear-estructura-de-directorios-adicional)
+    - [4. Configurar la base de datos](#4-configurar-la-base-de-datos)
+  - [⚙️ Configuración](#️-configuración)
+    - [Archivo `.env`](#archivo-env)
+    - [Archivo `.npmrc`](#archivo-npmrc)
+    - [Configuración de Base de Datos](#configuración-de-base-de-datos)
+  - [🚀 Uso](#-uso)
+    - [Ejecutar el Frontend](#ejecutar-el-frontend)
+    - [Ejecutar el Backend](#ejecutar-el-backend)
+    - [Modo de Desarrollo con Debug](#modo-de-desarrollo-con-debug)
+  - [🔧 Sistema Backend](#-sistema-backend)
+    - [Funcionalidades Principales](#funcionalidades-principales)
+    - [Seguridad Implementada](#seguridad-implementada)
+    - [Estructura de Base de Datos](#estructura-de-base-de-datos)
+  - [🛠️ Tecnologías Utilizadas](#️-tecnologías-utilizadas)
+    - [Frontend](#frontend)
+    - [Backend](#backend)
+    - [Herramientas de Desarrollo](#herramientas-de-desarrollo)
+  - [🎨 Personalización](#-personalización)
+    - [Modificar Estilos](#modificar-estilos)
+    - [Agregar Nuevos Componentes](#agregar-nuevos-componentes)
+    - [Configurar Nuevas Rutas API](#configurar-nuevas-rutas-api)
+  - [🐛 Solución de Problemas](#-solución-de-problemas)
+    - [Error de Autenticación](#error-de-autenticación)
+    - [Error de Conexión a Base de Datos](#error-de-conexión-a-base-de-datos)
+    - [Problemas de Compilación React](#problemas-de-compilación-react)
+    - [Conflictos de Dependencias](#conflictos-de-dependencias)
+  - [📊 Registro de Logs](#-registro-de-logs)
+  - [🚧 Limitaciones Conocidas](#-limitaciones-conocidas)
+  - [🔄 Próximas Funcionalidades](#-próximas-funcionalidades)
+  - [🤝 Contribución](#-contribución)
+    - [Reportar Issues](#reportar-issues)
+  - [📄 Licencia](#-licencia)
 
-**Fully Coded Components**
+---
 
-Argon Dashboard React is built with over 100 individual components, giving you the freedom of choosing and combining. All components can take variations in color, that you can easily modify using SASS files.
-You will save a lot of time going from prototyping to full-functional code, because all elements are implemented. This Dashboard is coming with pre-built examples, so the development process is seamless, switching from our pages to the real website is very easy to be done.
-Every element has multiple states for colors, styles, hover, focus, that you can easily access and use.
+## ✨ Características Principales
 
-**Complex Documentation**
+- **Panel Administrativo Moderno**: Interfaz React basada en Argon Dashboard con diseño responsive
+- **API REST Completa**: Sistema de autenticación y gestión integral de datos académicos
+- **Control de Acceso por Roles**: Sistema de permisos basado en roles de usuario
+- **Gestión de Estudiantes**: Seguimiento de estudiantes, tesis y asignación de tutores
+- **Sistema de Informes**: Generación y gestión de informes académicos (Anexo 5, Anexo 11)
+- **Métricas Académicas**: Estadísticas de estudiantes activos, graduados e informes por tutor
+- **Seguridad Avanzada**: Hash de contraseñas, bloqueo de cuentas y control de sesiones
+- **Base de Datos MySQL**: Integración robusta con Sequelize ORM
 
-Each element is well presented in a very complex documentation. You can read more about the idea behind this [dashboard here](https://demos.creative-tim.com/argon-dashboard-react/#/documentation/overview?ref=creativetim). You can check the [components here](https://demos.creative-tim.com/argon-dashboard-react/#/documentation/alerts?ref=creativetim) and the [foundation here](https://demos.creative-tim.com/argon-dashboard/#/documentation/colors?ref=creativetim).
+---
 
-**Example Pages**
+## 🏗️ Arquitectura del Sistema
 
-If you want to get inspiration or just show something directly to your clients, you can jump start your development with our pre-built example pages. You will be able to quickly set up the basic structure for your web project.
-
-## Table of Contents
-
-- [Versions](#versions)
-- [Demo](#demo)
-- [Quick Start](#quick-start)
-- [Documentation](#documentation)
-- [File Structure](#file-structure)
-- [Browser Support](#browser-support)
-- [Resources](#resources)
-- [Reporting Issues](#reporting-issues)
-- [Licensing](#licensing)
-- [Useful Links](#useful-links)
-
-## Versions
-
-[<img src="https://github.com/creativetimofficial/public-assets/blob/master/logos/html-logo.jpg?raw=true" width="60" height="60" />](https://www.creative-tim.com/product/argon-dashboard?ref=adr-github-readme)[<img src="https://github.com/creativetimofficial/public-assets/blob/master/logos/react-logo.jpg?raw=true" width="60" height="60" />](https://www.creative-tim.com/product/argon-dashboard-react?ref=adr-github-readme)[<img src="https://github.com/creativetimofficial/public-assets/blob/master/logos/angular-logo.jpg?raw=true" width="60" height="60" />](https://www.creative-tim.com/product/argon-dashboard-angular)[<img src="https://github.com/creativetimofficial/public-assets/blob/master/logos/nodejs-logo.jpg?raw=true" width="60" height="60" />](https://www.creative-tim.com/product/argon-dashboard-nodejs?ref=adr-github-readme)[<img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/logos/laravel_logo.png" width="60" height="60" style="background:white"/>](https://www.creative-tim.com/product/argon-dashboard-laravel?ref=adr-github-readme)[<img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/logos/sketch-logo.jpg" width="60" height="60" />](https://www.creative-tim.com/product/argon-dashboard-react?ref=adr-github-readme)
-
-| HTML                                                                                                                                                                                           | React                                                                                                                                                                                                             | Angular                                                                                                                                                                                                                   |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [![Argon Dashboard HTML](https://github.com/creativetimofficial/public-assets/blob/master/argon-dashboard/argon-dashboard.jpg?raw=true)](https://www.creative-tim.com/product/argon-dashboard) | [![Argon Dashboard React](https://github.com/creativetimofficial/public-assets/blob/master/argon-dashboard-react/argon-dashboard-react.jpg?raw=true)](https://www.creative-tim.com/product/argon-dashboard-react) | [![Argon Dashboard Angular](https://github.com/creativetimofficial/public-assets/blob/master/argon-dashboard-angular/argon-dashboard-angular.jpg?raw=true)](https://www.creative-tim.com/product/argon-dashboard-angular) |
-
-| NodeJS                                                                                                                                                                                                                | Laravel                                                                                                                                                                                                                   |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [![Argon Dashboard NodeJS](https://github.com/creativetimofficial/public-assets/blob/master/argon-dashboard-nodejs/argon-dashboard-nodejs.jpg?raw=true)](https://www.creative-tim.com/product/argon-dashboard-nodejs) | [![Argon Dashboard Laravel](https://github.com/creativetimofficial/public-assets/blob/master/argon-dashboard-laravel/argon-dashboard-laravel.jpg?raw=true)](https://www.creative-tim.com/product/argon-dashboard-laravel) |
-
-## Demo
-
-| Dashboard Page                                                                                                                                                                                              | Icons Page                                                                                                                                                                                          | Tables Page                                                                                                                                                                                            | Maps Page                                                                                                                                                                                        |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [![Dashboard Page](https://github.com/creativetimofficial/public-assets/blob/master/argon-dashboard-react/dashboard-page.png?raw=true)](https://demos.creative-tim.com/argon-dashboard-react/#/admin/index) | [![Icons Page](https://github.com/creativetimofficial/public-assets/blob/master/argon-dashboard-react/icons-page.png?raw=true)](https://demos.creative-tim.com/argon-dashboard-react/#/admin/icons) | [![Tables Page](https://github.com/creativetimofficial/public-assets/blob/master/argon-dashboard-react/tables-page.png?raw=true)](https://demos.creative-tim.com/argon-dashboard-react/#/admin/tables) | [![Maps Page](https://github.com/creativetimofficial/public-assets/blob/master/argon-dashboard-react/maps-page.png?raw=true)](https://demos.creative-tim.com/argon-dashboard-react/#/admin/maps) |
-
-| Register Page                                                                                                                                                                                             | Login Page Page                                                                                                                                                                                         | Profile Page                                                                                                                                                                                                |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [![Login Page](https://raw.githubusercontent.com/creativetimofficial/public-assets/master/argon-dashboard-react/register-page.png)](https://demos.creative-tim.com/argon-dashboard-react/#/auth/register) | [![Login Page Page](https://github.com/creativetimofficial/public-assets/blob/master/argon-dashboard-react/login-page.png?raw=true)](https://demos.creative-tim.com/argon-dashboard-react/#/auth/login) | [![Profile Page](https://github.com/creativetimofficial/public-assets/blob/master/argon-dashboard-react/user-page.png?raw=true)](https://demos.creative-tim.com/argon-dashboard-react/#/admin/user-profile) |
-
-[View More](https://demos.creative-tim.com/argon-dashboard-react?ref=adr-github-readme)
-
-## Quick start
-
-- `npm i argon-dashboard-react`
-- [Download from Github](https://github.com/creativetimofficial/argon-dashboard-react/archive/master.zip).
-- [Download from Creative Tim](https://www.creative-tim.com/product/argon-dashboard-react?ref=adr-github-readme).
-- Install with [Bower](https://bower.io/?ref=creativetim): `bower install argon-dashboard-react`.
-- Clone the repo: `git clone https://github.com/creativetimofficial/argon-dashboard-react.git`.
-
-## Documentation
-
-The documentation for the Material Kit is hosted at our [website](https://demos.creative-tim.com/argon-dashboard-react/#/documentation/overview).
-
-## File Structure
-
-Within the download you'll find the following directories and files:
+El sistema utiliza una arquitectura de tres capas que proporciona separación clara entre la presentación, lógica de negocio y persistencia de datos:
 
 ```
-Argon Dashboard React
-.
-├── Documentation
-│   └── documentation.html
-├── CHANGELOG.md
-├── ISSUE_TEMPLATE.md
-├── LICENSE
-├── README.md
-├── package.json
-├── public
-│   ├── favicon.ico
-│   ├── index.html
-│   └── manifest.json
-└── src
-    ├── assets
-    │   ├── css
-    │   │   ├── argon-dashboard-react.css
-    │   │   ├── argon-dashboard-react.css.map
-    │   │   └── argon-dashboard-react.min.css
-    │   ├── fonts
-    │   │   └── nucleo
-    │   ├── img
-    │   │   ├── brand
-    │   │   ├── icons
-    │   │   │   └── common
-    │   │   └── theme
-    │   ├── scss
-    │   │   ├── argon-dashboard-react.scss
-    │   │   ├── bootstrap
-    │   │   │   ├── mixins
-    │   │   │   └── utilities
-    │   │   ├── core
-    │   │   │   ├── alerts
-    │   │   │   ├── avatars
-    │   │   │   ├── badges
-    │   │   │   ├── buttons
-    │   │   │   ├── cards
-    │   │   │   ├── charts
-    │   │   │   ├── close
-    │   │   │   ├── custom-forms
-    │   │   │   ├── dropdowns
-    │   │   │   ├── footers
-    │   │   │   ├── forms
-    │   │   │   ├── headers
-    │   │   │   ├── icons
-    │   │   │   ├── list-groups
-    │   │   │   ├── maps
-    │   │   │   ├── masks
-    │   │   │   ├── mixins
-    │   │   │   ├── modals
-    │   │   │   ├── navbars
-    │   │   │   ├── navs
-    │   │   │   ├── paginations
-    │   │   │   ├── popovers
-    │   │   │   ├── progresses
-    │   │   │   ├── separators
-    │   │   │   ├── tables
-    │   │   │   ├── type
-    │   │   │   ├── utilities
-    │   │   │   └── vendors
-    │   │   ├── custom
-    │   │   └── react
-    │   └── vendor
-    │       ├── @fortawesome
-    │       │   └── fontawesome-free
-    │       │       ├── LICENSE.txt
-    │       │       ├── css
-    │       │       ├── js
-    │       │       ├── less
-    │       │       ├── scss
-    │       │       ├── sprites
-    │       │       ├── svgs
-    │       │       │   ├── brands
-    │       │       │   ├── regular
-    │       │       │   └── solid
-    │       │       └── webfonts
-    │       └── nucleo
-    │           ├── css
-    │           └── fonts
-    ├── components
-    │   ├── Footers
-    │   │   ├── AdminFooter.jsx
-    │   │   └── AuthFooter.jsx
-    │   ├── Headers
-    │   │   ├── Header.jsx
-    │   │   └── UserHeader.jsx
-    │   ├── Navbars
-    │   │   ├── AdminNavbar.jsx
-    │   │   └── AuthNavbar.jsx
-    │   └── Sidebar
-    │       └── Sidebar.jsx
-    ├── index.js
-    ├── layouts
-    │   ├── Admin.jsx
-    │   └── Auth.jsx
-    ├── routes.js
-    ├── variables
-    │   └── charts.jsx
-    └── views
-        ├── Index.jsx
-        └── examples
-            ├── Icons.jsx
-            ├── Login.jsx
-            ├── Maps.jsx
-            ├── Profile.jsx
-            ├── Register.jsx
-            └── Tables.jsx
+┌─────────────────────────────────────────┐
+│           Frontend Layer                │
+│     React + Argon Dashboard             │
+│   (Componentes, Layouts, Views)         │
+└─────────────┬───────────────────────────┘
+              │ API REST
+┌─────────────▼───────────────────────────┐
+│           Backend Layer                 │
+│      Express.js + Middlewares           │
+│  (Controladores, Autenticación, APIs)   │
+└─────────────┬───────────────────────────┘
+              │ MySQL Queries
+┌─────────────▼───────────────────────────┐
+│          Database Layer                 │
+│           MySQL + Sequelize             │
+│   (usuarios, estudiantes, informes)     │
+└─────────────────────────────────────────┘
+```
+---
+
+## 📁 Estructura del Proyecto
+
+```
+gradux/
+├── .github/                      # Configuración de GitHub Actions
+│   └── workflows/               # Flujos de trabajo automatizados
+├── backend/                     # Lógica del servidor
+│   ├── config/                 # Configuración de base de datos
+│   │   └── db.js              # Conexión MySQL
+│   ├── controllers/           # Controladores de API
+│   │   └── authController.js  # Lógica de autenticación y CRUD
+│   ├── middlewares/          # Middlewares de seguridad
+│   │   └── authMiddleware.js # Control de acceso y roles
+│   ├── models/              # Modelos de datos Sequelize
+│   └── routes/             # Definición de rutas API
+├── Documentation/             # Documentación del proyecto
+├── public/                   # Archivos públicos estáticos
+├── src/                     # Código fuente frontend
+│   ├── api/                # Servicios de API
+│   ├── assets/            # Recursos estáticos
+│   │   ├── css/          # Hojas de estilo compiladas
+│   │   ├── fonts/        # Fuentes tipográficas
+│   │   ├── img/          # Imágenes y recursos gráficos
+│   │   │   ├── brand/    # Logos e identidad visual
+│   │   │   ├── icons/    # Iconografía del sistema
+│   │   │   └── theme/    # Imágenes temáticas
+│   │   ├── plugins/      # Plugins y librerías externas
+│   │   │   └── nucleo/   # Biblioteca de iconos Nucleo
+│   │   └── scss/         # Código fuente SASS/SCSS
+│   │       ├── argon-dashboard/ # Estilos del dashboard
+│   │       │   ├── custom/      # Componentes personalizados
+│   │       │   └── docs/        # Documentación de estilos
+│   │       └── react/           # Estilos específicos de React
+│   ├── components/        # Componentes reutilizables
+│   │   ├── Footers/      # Componentes de pie de página
+│   │   ├── Headers/      # Componentes de encabezado
+│   │   ├── modals/       # Ventanas modales
+│   │   ├── Navbars/      # Barras de navegación
+│   │   ├── PDF/          # Generación de documentos PDF
+│   │   ├── Sidebar/      # Barra lateral de navegación
+│   │   └── tables/       # Componentes de tablas
+│   ├── context/          # Context API de React
+│   ├── layouts/          # Layouts principales
+│   ├── variables/        # Variables globales
+│   └── views/            # Páginas y vistas
+│       └── examples/     # Páginas de ejemplo
+├── package.json          # Dependencias y scripts
+├── .env                 # Variables de entorno
+├── .npmrc              # Configuración de npm
+└── README.md           # Documentación principal
 ```
 
-## Browser Support
+### 📂 Descripción detallada de módulos
 
-At present, we officially aim to support the last two versions of the following browsers:
+| 📁 Carpeta / Archivo                | 📌 Descripción                                                                                       |
+|------------------------------------|------------------------------------------------------------------------------------------------------|
+| `.github/workflows/`              | Configuración de GitHub Actions para flujos CI/CD automatizados.                                   |
+| `backend/`                         | Lógica del servidor y API backend.                                                                  |
+| ├── `config/db.js`                | Configuración de conexión a base de datos MySQL mediante Sequelize.                                 |
+| ├── `controllers/`                | Lógica de negocio y controladores de rutas API.                                                     |
+| ├── `middlewares/`                | Middlewares de seguridad, autenticación y control de roles.                                         |
+| ├── `models/`                     | Modelos de datos Sequelize para entidades del sistema.                                              |
+| └── `routes/`                     | Definición de rutas del backend y asignación de controladores.                                      |
+| `Documentation/`                  | Documentación técnica del proyecto, manuales o referencias.                                         |
+| `public/`                         | Archivos públicos accesibles por el navegador (favicon, manifest, etc.).                            |
+| `src/`                             | Código fuente del frontend (React + SCSS).                                                          |
+| ├── `api/`                        | Servicios para interactuar con la API del backend.                                                  |
+| ├── `assets/`                     | Recursos estáticos del frontend.                                                                    |
+| │ ├── `css/`                      | Hojas de estilo compiladas (CSS final).                                                             |
+| │ ├── `fonts/`                    | Fuentes tipográficas utilizadas en el diseño.                                                       |
+| │ ├── `img/`                      | Imágenes y recursos gráficos.                                                                       |
+| │ │ ├── `brand/`                 | Logos y elementos de identidad visual.                                                              |
+| │ │ ├── `icons/`                 | Iconografía general del sistema.                                                                    |
+| │ │ └── `theme/`                 | Imágenes temáticas decorativas.                                                                     |
+| │ ├── `plugins/`                  | Librerías externas (como Nucleo Icons).                                                             |
+| │ └── `scss/`                     | Código fuente de estilos SCSS.                                                                      |
+| │   ├── `argon-dashboard/`       | Estilos base del dashboard Argon.                                                                   |
+| │   │ ├── `custom/`              | Estilos personalizados del proyecto.                                                                |
+| │   │ └── `docs/`                | Documentación interna del sistema de estilos.                                                       |
+| │   └── `react/`                 | Estilos específicos para componentes React.                                                         |
+| ├── `components/`                 | Componentes UI reutilizables del frontend.                                                          |
+| │ ├── `Footers/`                 | Pies de página.                                                                                      |
+| │ ├── `Headers/`                 | Encabezados superiores.                                                                             |
+| │ ├── `modals/`                  | Ventanas emergentes (modales).                                                                      |
+| │ ├── `Navbars/`                 | Barras de navegación principal.                                                                     |
+| │ ├── `PDF/`                     | Componentes de generación y visualización de PDFs.                                                  |
+| │ ├── `Sidebar/`                 | Barra lateral de navegación.                                                                        |
+| │ └── `tables/`                  | Componentes para visualización de tablas.                                                           |
+| ├── `context/`                    | Context API de React para manejo de estado global.                                                  |
+| ├── `layouts/`                    | Estructuras de diseño general para páginas.                                                         |
+| ├── `variables/`                  | Variables globales (temas, colores, constantes).                                                    |
+| └── `views/`                      | Vistas o páginas completas.                                                                         |
+| └── `examples/`                   | Páginas de ejemplo para referencia o pruebas.                                                       |
+| `.env`                            | Variables de entorno para configuración local o despliegue.                                         |
+| `.npmrc`                          | Configuración de comportamiento del gestor de paquetes npm.                                         |
+| `package.json`                    | Lista de dependencias, scripts y configuración general del proyecto.                               |
+| `README.md`                       | Documentación principal del proyecto.                                                               |
 
-<img src="https://github.com/creativetimofficial/public-assets/blob/master/logos/chrome-logo.png?raw=true" width="64" height="64"> <img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/logos/firefox-logo.png" width="64" height="64"> <img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/logos/edge-logo.png" width="64" height="64"> <img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/logos/safari-logo.png" width="64" height="64"> <img src="https://raw.githubusercontent.com/creativetimofficial/public-assets/master/logos/opera-logo.png" width="64" height="64">
+> 📝 **Nota:** Esta tabla describe de forma general cada módulo/carpeta. Algunas carpetas como `controllers/`, `routes/` o `components/` pueden contener múltiples archivos especializados según el alcance del proyecto.
 
-## Resources
 
-- Demo: <https://demos.creative-tim.com/argon-dashboard-react/#/admin/index?ref=adr-github-readme>
-- Download Page: <https://www.creative-tim.com/product/argon-dashboard-react?ref=adr-github-readme>
-- Documentation: <https://demos.creative-tim.com/argon-dashboard-react/#/documentation/overview?ref=adr-github-readme>
-- License Agreement: <https://www.creative-tim.com/license?ref=adr-github-readme>
-- Support: <https://www.creative-tim.com/contact-us?ref=adr-github-readme>
-- Issues: [Github Issues Page](https://github.com/creativetimofficial/argon-dashboard-react/issues?ref=creativetim)
-- **Kit:**
+---
 
-| HTML                                                                                                                                                                                                            | Vue                                                                                                                                                                                                                       |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [![Argon Design System  HTML](https://github.com/creativetimofficial/public-assets/blob/master/argon-design-system/argon-design-system.jpg?raw=true)](https://www.creative-tim.com/product/argon-design-system) | [![Vue Argon Design System](https://github.com/creativetimofficial/public-assets/blob/master/vue-argon-design-system/vue-argon-design-system.jpg?raw=true)](https://www.creative-tim.com/product/vue-argon-design-system) |
+## 🛠️ Requisitos Previos
 
-## Reporting Issues
+- **Node.js** >= 14.x
+- **MySQL Server** >= 5.7
+- **npm** o **yarn**
+- **Git** (opcional para clonar)
 
-We use GitHub Issues as the official bug tracker for the Material Kit. Here are some advices for our users that want to report an issue:
+---
 
-1. Make sure that you are using the latest version of the Material Kit. Check the CHANGELOG from your dashboard on our [website](https://www.creative-tim.com/?ref=adr-github-readme).
-2. Providing us reproducible steps for the issue will shorten the time it takes for it to be fixed.
-3. Some issues may be browser specific, so specifying in what browser you encountered the issue might help.
+## 📦 Instalación
 
-## Licensing
+### 1. Clonar el repositorio
 
-- Copyright 2024 Creative Tim (https://www.creative-tim.com/?ref=adr-github-readme)
+```bash
+git clone https://github.com/usuario/gradux.git
+cd gradux
+```
 
-- Licensed under MIT (https://github.com/creativetimofficial/argon-dashboard-react/blob/master/LICENSE.md?ref=creativetim)
+### 2. Instalar dependencias
 
-## Useful Links
+```bash
+npm install
+```
 
-- [Tutorials](https://www.youtube.com/channel/UCVyTG4sCw-rOvB9oHkzZD1w?ref=creativetim)
-- [Affiliate Program](https://www.creative-tim.com/affiliates/new?ref=adr-github-readme) (earn money)
-- [Blog Creative Tim](http://blog.creative-tim.com/?ref=adr-github-readme)
-- [Free Products](https://www.creative-tim.com/bootstrap-themes/free?ref=adr-github-readme) from Creative Tim
-- [Premium Products](https://www.creative-tim.com/bootstrap-themes/premium?ref=adr-github-readme) from Creative Tim
-- [React Products](https://www.creative-tim.com/bootstrap-themes/react-themes?ref=adr-github-readme) from Creative Tim
-- [Angular Products](https://www.creative-tim.com/bootstrap-themes/angular-themes?ref=adr-github-readme) from Creative Tim
-- [VueJS Products](https://www.creative-tim.com/bootstrap-themes/vuejs-themes?ref=adr-github-readme) from Creative Tim
-- [More products](https://www.creative-tim.com/bootstrap-themes?ref=adr-github-readme) from Creative Tim
-- Check our Bundles [here](https://www.creative-tim.com/bundles?ref=adr-github-readme)
+### 3. Crear estructura de directorios adicional
 
-### Social Media
+```bash
+mkdir -p input output logs
+```
 
-Twitter: <https://twitter.com/CreativeTim?ref=creativetim>
+### 4. Configurar la base de datos
 
-Facebook: <https://www.facebook.com/CreativeTim?ref=creativetim>
+```sql
+CREATE DATABASE agiles;
+```
 
-Dribbble: <https://dribbble.com/creativetim?ref=creativetim>
+> ℹ️ **Nota:** *Las tablas se generan automáticamente con Sequelize al ejecutar el backend.*
 
-Instagram: <https://www.instagram.com/CreativeTimOfficial?ref=creativetim>
+---
+
+## ⚙️ Configuración
+
+### Archivo `.env`
+
+```env
+GENERATE_SOURCEMAP=false
+```
+
+### Archivo `.npmrc`
+
+```ini
+legacy-peer-deps=true
+auto-install-peers=true
+strict-peer-dependencies=false
+```
+
+### Configuración de Base de Datos
+
+Editar `backend/config/db.js`:
+
+```javascript
+const mysql = require('mysql2');
+
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: 'tu_password',
+  database: 'agiles'
+});
+```
+
+---
+
+## 🚀 Uso
+
+### Ejecutar el Frontend
+
+```bash
+npm start
+```
+
+La aplicación React estará disponible en `http://localhost:3000`
+
+### Ejecutar el Backend
+
+```bash
+node backend/index.js
+```
+
+La API estará disponible en `http://localhost:5000`
+
+### Modo de Desarrollo con Debug
+
+```bash
+node backend/index.js --debug
+```
+
+---
+
+## 🔧 Sistema Backend
+
+### Funcionalidades Principales
+
+| Módulo | Funciones | Descripción |
+|--------|-----------|-------------|
+| **Autenticación** | `login()`, `createUser()` | Gestión de usuarios y sesiones |
+| **Estudiantes** | `createStudent()`, `getAllStudents()` | Administración de estudiantes |
+| **Informes** | `createInforme()`, `getInformesByTutor()` | Gestión de informes académicos |
+| **Actividades** | `createActivity()`, `updateActivityById()` | Seguimiento de actividades |
+| **Estadísticas** | `getEstudiantesCount()`, `getGraduadosCount()` | Métricas del dashboard |
+
+### Seguridad Implementada
+
+- **Hash de Contraseñas**: Utilizando bcrypt con 10 rondas de sal
+- **Bloqueo de Cuentas**: Bloqueo automático después de 3 intentos fallidos
+- **Control de Sesiones**: Gestión segura con express-session
+- **Middleware de Autenticación**: Verificación de roles y permisos
+
+### Estructura de Base de Datos
+
+```sql
+-- Tablas principales
+usuarios      -- Gestión de usuarios del sistema
+estudiantes   -- Información de estudiantes
+informes      -- Informes académicos (Anexo 5, Anexo 11)
+actividades   -- Actividades asociadas a informes
+carreras      -- Programas académicos
+```
+
+---
+
+## 🛠️ Tecnologías Utilizadas
+
+### Frontend
+- **React** 18.x
+- **Argon Dashboard** (Creative Tim)
+- **Bootstrap** 4.6.0
+- **Chart.js** - Visualización de datos
+- **FontAwesome** - Iconografía
+- **SASS/SCSS** - Preprocesador CSS
+
+### Backend
+- **Node.js** + **Express.js**
+- **MySQL** + **Sequelize ORM**
+- **bcrypt** - Seguridad de contraseñas
+- **express-session** - Gestión de sesiones
+
+### Herramientas de Desarrollo
+- **Create React App** - Configuración base
+- **GitHub Actions** - CI/CD
+- **ESLint** - Linting de código
+
+---
+
+## 🎨 Personalización
+
+### Modificar Estilos
+
+Los estilos se encuentran en `src/assets/scss/argon-dashboard/`:
+
+```scss
+// Personalizar colores principales
+$primary-color: #5e72e4;
+$secondary-color: #f4f5f7;
+
+// Modificar componentes específicos
+@import './custom/buttons';
+@import './custom/cards';
+```
+
+### Agregar Nuevos Componentes
+
+1. Crear componente en `src/components/`
+2. Agregar ruta en `src/layouts/`
+3. Configurar API en `backend/controllers/`
+
+### Configurar Nuevas Rutas API
+
+```javascript
+// backend/controllers/authController.js
+exports.nuevaFuncion = async (req, res) => {
+  try {
+    // Lógica de negocio
+    res.json({ success: true, data: resultado });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+```
+
+---
+
+## 🐛 Solución de Problemas
+
+### Error de Autenticación
+
+```bash
+# Verificar configuración de base de datos
+node backend/config/db.js
+
+# Revisar logs de autenticación
+tail -f logs/ejecucion_$(date +%Y-%m-%d).log
+```
+
+### Error de Conexión a Base de Datos
+
+1. Verificar que MySQL esté ejecutándose
+2. Comprobar credenciales en `backend/config/db.js`
+3. Verificar que la base de datos `agiles` exista
+
+### Problemas de Compilación React
+
+```bash
+# Limpiar caché y reinstalar
+rm -rf node_modules package-lock.json
+npm install
+
+# Verificar configuración
+echo "GENERATE_SOURCEMAP=false" > .env
+```
+
+### Conflictos de Dependencias
+
+```bash
+# Usar configuración legacy
+npm install --legacy-peer-deps
+
+# O configurar .npmrc
+echo "legacy-peer-deps=true" >> .npmrc
+```
+
+---
+
+## 📊 Registro de Logs
+
+El sistema genera logs automáticos en:
+
+```
+./logs/
+└── ejecucion_2025-06-22.log
+```
+
+Los logs incluyen:
+- Eventos de autenticación
+- Operaciones de base de datos
+- Errores del sistema
+- Actividad de usuarios
+
+---
+
+## 🚧 Limitaciones Conocidas
+
+- Requiere configuración manual inicial de la base de datos
+- No incluye sistema de notificaciones por correo
+- Falta implementación de pruebas unitarias automatizadas
+- Sin soporte para múltiples idiomas
+
+## 🔄 Próximas Funcionalidades
+
+- [ ] Sistema de notificaciones
+- [ ] Exportación de reportes en múltiples formatos
+- [ ] Dashboard de métricas avanzadas
+- [ ] Integración con sistemas de correo
+- [ ] API REST documentada con Swagger
+
+---
+
+## 🤝 Contribución
+
+¡Las contribuciones son bienvenidas! Para contribuir:
+
+1. **Fork** el proyecto
+2. Crea tu **feature branch** (`git checkout -b feature/nueva-funcionalidad`)
+3. **Commit** tus cambios (`git commit -m 'Agregar nueva funcionalidad'`)
+4. **Push** a la branch (`git push origin feature/nueva-funcionalidad`)
+5. Abre un **Pull Request**
+
+### Reportar Issues
+
+- Usa el template de issues de GitHub
+- Incluye pasos para reproducir el problema
+- Especifica versión del navegador y Node.js
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la **Licencia MIT** © Creative Tim 2021.
+
+```
+MIT License
+
+Copyright (c) 2021 Creative Tim
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software...
+```
+
+Ver el archivo [LICENSE](./LICENSE) para más detalles.
+
+---
+
+
+**Desarrollado como una solución integral para la gestión académica en instituciones educativas, combinando una interfaz moderna en React, un backend robusto en Node.js/Express y una arquitectura orientada a roles sobre MySQL.** 🎓🖥️
+
+<div align="center">
+
+**[⬆ Volver al inicio](#-sistema-de-gestión-académica---argon-dashboard-react)**
+
+</div>
